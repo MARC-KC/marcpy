@@ -319,7 +319,7 @@ def __createPipDependency(row, generalizeGitRemotes = False):
 
 
 
-def snapshot(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX'), envYMLloc = os.getcwd(), generalizeGitRemotes = False):
+def env_snapshot(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX'), envYMLloc = os.getcwd(), generalizeGitRemotes = False):
     """Create environment.yml snapshot for the specified conda environment
 
     Conda friendly snapshot from a combination  of 
@@ -427,9 +427,9 @@ def snapshot(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('
 # list_packages(condaExe='C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Anaconda3_64\\Scripts\\conda.exe', condaEnv='C:\\Users\\jpeterson\\AppData\\Local\\ESRI\\conda\\envs\\arcgispro-py3-clone')
 
 
-# snapshot()
-# snapshot(generalizeGitRemotes = True)
-# snapshot(condaExe = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Anaconda3_64\\Scripts\\conda.exe', condaEnv = 'C:\\Users\\jpeterson\\AppData\\Local\\ESRI\\conda\\envs\\arcgispro-py3-clone')
+# env_snapshot()
+# env_snapshot(generalizeGitRemotes = True)
+# env_snapshot(condaExe = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Anaconda3_64\\Scripts\\conda.exe', condaEnv = 'C:\\Users\\jpeterson\\AppData\\Local\\ESRI\\conda\\envs\\arcgispro-py3-clone')
 
 
 
