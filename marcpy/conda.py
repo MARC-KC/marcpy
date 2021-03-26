@@ -385,7 +385,7 @@ def snapshot(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('
     #Get conda packages `conda env export --prefix /path/to/conda/env`
     #+++++++++++++++++++++++++++++
     #Retrieve snapshot
-    condaSnapshot = subprocess.check_output([condaExe, 'env', 'export', '--prefix', condaEnv]).decode("utf-8").split("\r\n")
+    condaSnapshot = subprocess.check_output([condaExe, 'env', 'export', '--prefix', condaEnv, '--no-builds']).decode("utf-8").split("\r\n")
     condaSnapshot = numpy.array(condaSnapshot)
     #+++++++++++++++++++++++++++++
 
