@@ -1,3 +1,8 @@
+"""This module holds helper functions to make working with keyring in R and 
+Python a similar experience and allow keys to be shared by both languages on 
+the same machine.
+"""
+
 import getpass
 
 import keyring

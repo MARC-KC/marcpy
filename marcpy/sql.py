@@ -1,3 +1,8 @@
+"""This module holds helper functions for working with SQL tables. These 
+functions may be hardcoded to work with Microsoft SQL Servers as that is what
+MARC uses.
+"""
+
 import pyodbc
 from marcpy import keyringHelper
 
