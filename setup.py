@@ -18,7 +18,7 @@ INSTALL_REQUIRES = [
       'numpy', #conda
       'pandas', #conda
       'keyring', #keyringHelper
-      'pyodbc' #keyringHelper
+      'pyodbc' #keyringHelper, sql
 ]
 
 setup(name=PACKAGE_NAME,
