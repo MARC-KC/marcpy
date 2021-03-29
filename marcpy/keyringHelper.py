@@ -2,7 +2,6 @@ import getpass
 
 import keyring
 import pyodbc
-import pandas
 
 
 def _key_create_serviceName(serviceName="", userName=""):

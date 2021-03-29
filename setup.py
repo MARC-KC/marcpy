@@ -16,7 +16,7 @@ LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
       'numpy', #conda
-      'pandas', #conda, keyringHelper
+      'pandas', #conda
       'keyring', #keyringHelper
       'pyodbc' #keyringHelper
 ]
