@@ -59,12 +59,8 @@ def key_get(serviceName="", userName=""):
     serviceName = _key_create_serviceName(serviceName, userName)
 
     #Check that the key exists
-    try:
-        keyring.get_credential(serviceName, None).username
-    except AttributeError:
-        print("Cannot find a record for " + userName + " in your Windows Credential Manager. Does it need added?")
-        print("See instructions HERE on how to add it.")
-        raise
+    if keyring.get_credential(serviceName, None) is None:
+        raise RuntimeError("Cannot find a record for " + serviceName + " in your Windows Credential Manager. Does it need added? See instructions HERE on how to add it.")
     
     #Retrieve Key
     outPass = keyring.get_password(serviceName, userName)
@@ -99,8 +95,7 @@ def key_set(serviceName="", userName=""):
     serviceName = _key_create_serviceName(serviceName, userName)
 
     #Check that the key doesn't exist
-    keyPass = keyring.get_password(serviceName, userName)
-    if keyPass is not None:
+    if keyring.get_password(serviceName, userName) is not None:
         raise RuntimeError("There is already a key set for " + serviceName + ". Please delete the old key and reset it if you need to alter it.")
 
     #Set Key
@@ -132,11 +127,8 @@ def key_delete(serviceName="", userName=""):
     serviceName = _key_create_serviceName(serviceName, userName)
 
     #Check that the key exists
-    try:
-        keyring.get_credential(serviceName, None).username
-    except AttributeError:
-        print("Cannot find a record for " + userName + " in your Windows Credential Manager. Check your inputs")
-        raise
+    if keyring.get_credential(serviceName, None) is None:
+        raise RuntimeError("Cannot find a record for " + serviceName + " in your Windows Credential Manager. Check your inputs")
 
     #Delete key
     keyring.delete_password(serviceName, userName)
