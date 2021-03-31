@@ -3,6 +3,7 @@ environments.
 """
 import json
 import os
+from io import StringIO
 import sys
 import subprocess
 import warnings
@@ -211,7 +212,7 @@ def list_packages(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.
     #+++++++++++++++++++++++++++++
     #Pull the JSON and format it into a python table
     rawJson = subprocess.check_output([condaExe, 'list', '--prefix', condaEnv, '--json']).decode("utf-8")
-    pdJson = pandas.read_json(rawJson)
+    pdJson = pandas.read_json(StringIO(rawJson))
     pdOut = pdJson[["name", "version", "channel"]]
     pdOut = pdOut.assign(pipRemote=numpy.nan)
 
