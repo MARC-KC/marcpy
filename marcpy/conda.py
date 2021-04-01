@@ -487,7 +487,7 @@ def install_conda(packages, condaChannel = "", condaExe = os.environ.get('CONDA_
     # Attempt to install with conda
     condaReturn = subprocess.run(installArgs)
     if condaReturn.returncode != 0:
-        raise RuntimeError("Error installing " + depPkg + " from conda. Installing from pip instead.")
+        raise RuntimeError("Error installing '" + "', '".join(packages) + "' from conda.")
 
     return None
 
@@ -608,8 +608,9 @@ def _install_PipWithCondaDependencies(packages, condaChannel = "", condaExe = os
 
             except Exception as e:
                 print(e)
+                print("Installing from pip instead.")
                 # Install dependency from pip
-                tmp = __install_pip_subprocess(packages = packages, condaEnvPython = condaEnvPython)
+                tmp = __install_pip_subprocess(packages = depPkg, condaEnvPython = condaEnvPython)
 
 
         out = __install_pip_subprocess(packages = packages, condaEnvPython = condaEnvPython)
@@ -772,8 +773,6 @@ def install_packages(packages, UsePip = False, UseCondaDependencies = True, cond
         else:
             raise RuntimeError("Input for UsePip should have a length of 1 or be the same length as packages")
 
-    # packages
-    # UsePip
 
     #Seperate into Conda and Pip package
     packagesPip = numpy.array(packages)[UsePip].tolist()
