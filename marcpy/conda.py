@@ -426,14 +426,255 @@ def env_snapshot(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.g
 
 
 
+def install_conda(packages, condaChannel = "", condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX')):
+    """Install Conda package(s)
 
-# list_packages()
-# list_packages(condaExe='C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Anaconda3_64\\Scripts\\conda.exe', condaEnv='C:\\Users\\jpeterson\\AppData\\Local\\ESRI\\conda\\envs\\arcgispro-py3-clone')
+    A wrapper for the console command: 
+    conda install pkg1 pkg2 ... --channel $condaChannel --prefix /pth/to/Conda/env -y
+    If condaChannel is left unaltered the channel arguments will be left out.
+
+    Parameters
+    ----------
+    packages : str or list
+        What packages should be installed? Can be either a string or a list of
+        strings.
+    condaChannel : str
+        You can specify what conda channel you what to install dependencies to
+        here. Example 'conda-forge'. Default is an empty string and will ignore
+        the channel argument when calling conda install.
+    condaExe : str 
+        A conda executable path. Defaults to the 
+        environmental variable 'CONDA_EXE'
+    condaEnv : str
+        A conda environment. Can either be the name of the environment
+        or the full file path ending with the environment (prefix). 
+        Defaults to the environmental variable 'CONDA_PREFIX'.
+
+    Returns
+    -------
+    None
+        This function returns nothing.
+    """
+
+    # Check that condaExe exists
+    _checkCondaExe(condaExe)
+
+    # Check if condaEnv is a path or a virtual envrionment name
+    condaEnv = _env_resolve(condaExe, condaEnv)
+
+    #Check packages input and make sure its a list
+    if isinstance(packages, str):
+        packages = [packages]
+    if isinstance(packages, list) == False:
+        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
+
+    #Print Statement
+    printHighlighter = "############################################################################"
+    print(printHighlighter); print(printHighlighter)
+    print("Installing the following packages with Conda: '" + "', '".join(packages) + "'.")
+    print(printHighlighter); print(printHighlighter)
+
+    # Create list of the install command arguments
+    installArgs = [condaExe, 'install']
+    installArgs.extend(packages)
+    
+    if condaChannel != "":
+        installArgs.extend(['--channel', condaChannel])
+
+    installArgs.extend(['--prefix', condaEnv, '-y'])
+    
+    # Attempt to install with conda
+    condaReturn = subprocess.run(installArgs)
+    if condaReturn.returncode != 0:
+        raise RuntimeError("Error installing " + depPkg + " from conda. Installing from pip instead.")
+
+    return None
 
 
-# env_snapshot()
-# env_snapshot(generalizeGitRemotes = True)
-# env_snapshot(condaExe = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Anaconda3_64\\Scripts\\conda.exe', condaEnv = 'C:\\Users\\jpeterson\\AppData\\Local\\ESRI\\conda\\envs\\arcgispro-py3-clone')
 
 
+def _install_PipWithCondaDependencies(packages, condaChannel = "", condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX')):
+    """Install Pip package(s), but prioritize dependency installation from Conda
 
+    A specialized installation function that prioritizes dependencies to be 
+    installed from Conda instead of Pip to match best practices. This can be 
+    especially useful when trying to install a package from GitHub that requires
+    it to be installed by Pip, but will allow dependencies that need compiled 
+    binaries to be installed from Conda without a lot of extra work.
+
+    Parameters
+    ----------
+    packages : str or list
+        What packages should be installed? Can be either a string or a list of
+        strings.
+    condaChannel : str
+        You can specify what conda channel you what to install dependencies to
+        here. Example 'conda-forge'. Default is an empty string and will ignore
+        the channel argument when calling conda install.
+    condaExe : str 
+        A conda executable path. Defaults to the 
+        environmental variable 'CONDA_EXE'
+    condaEnv : str
+        A conda environment. Can either be the name of the environment
+        or the full file path ending with the environment (prefix). 
+        Defaults to the environmental variable 'CONDA_PREFIX'.
+
+    Returns
+    -------
+    None
+        This function returns nothing.
+    """
+
+    # Check that condaExe exists
+    _checkCondaExe(condaExe)
+
+    # Check if condaEnv is a path or a virtual envrionment name
+    condaEnv = _env_resolve(condaExe, condaEnv)
+
+    #Get Environment Python Executable
+    condaEnvPython = os.path.join(condaEnv, "python.exe")
+
+    #Check packages input and make sure its a list
+    if isinstance(packages, str):
+        packages = [packages]
+    if isinstance(packages, list) == False:
+        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
+
+    # pkg = 'selenium'
+    for pkg in packages:
+
+        # Get an array of uninstalled package dependencies given an installation.
+        depCheck = subprocess.run([condaEnvPython, '-m', 'pip', 'download', pkg, "-d", os.environ.get("TEMP")], capture_output=True)
+        if depCheck.returncode != 0:
+            raise RuntimeError("Error finding package distribution in pip for the package '" + pkg + "'. Please check the name is correct.")
+            
+
+        depCheck = depCheck.stdout.decode("utf-8").split("\r\n")
+        depCheck = numpy.array(depCheck)[numpy.where(numpy.array(list(map(lambda x: x.startswith("Collecting "), depCheck))))[0]]
+        depCheck = numpy.char.replace(depCheck, "Collecting ", "")
+        depCheck = depCheck[numpy.where(depCheck != pkg)[0]]
+
+        # depPkg = depCheck.item(0)
+        for depPkg in depCheck:
+
+            #Attempt to install from conda and pip otherwise
+            try:
+                
+                # Attempt to install with conda
+                install_conda(packages = depPkg, condaChannel = condaChannel, condaExe = condaExe, condaEnv = condaEnv) 
+
+            except Exception as e:
+                print(e)
+                # Install dependency from pip
+                tmp = subprocess.run([condaEnvPython, '-m', 'pip', 'install', depPkg])
+
+        out = subprocess.run([condaEnvPython, '-m', 'pip', 'install', pkg])
+
+    return None
+
+
+def _install_PipWithOutCondaDependencies(packages, condaEnv = os.environ.get('CONDA_PREFIX')):
+    """Install Pip package(s)
+
+    A wrapper for the console command: 
+    python -m pip install pkg1 pkg2 ... 
+    It installs to the envirionment specified in condaEnv.
+
+    Parameters
+    ----------
+    packages : str or list
+        What packages should be installed? Can be either a string or a list of
+        strings.
+    condaEnv : str
+        A conda environment. Can either be the name of the environment
+        or the full file path ending with the environment (prefix). 
+        Defaults to the environmental variable 'CONDA_PREFIX'.
+
+    Returns
+    -------
+    None
+        This function returns nothing.
+    """
+
+    # Check if condaEnv is a path or a virtual envrionment name
+    condaEnv = _env_resolve(condaExe, condaEnv)
+
+    #Get Environment Python Executable
+    condaEnvPython = os.path.join(condaEnv, "python.exe")
+
+    #Check packages input and make sure its a list
+    if isinstance(packages, str):
+        packages = [packages]
+    if isinstance(packages, list) == False:
+        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
+
+    #Install from pip
+    argList = [condaEnvPython, '-m', 'pip', 'install']
+    argList.extend(packages)
+    out = subprocess.run(argList)
+    if out.returncode != 0:
+        raise RuntimeError("Error installing package(s) with pip. See console output from pip.")
+
+    return None
+
+def __install_pip_subprocess(packages, condaEnvPython):
+    #Check packages input and make sure its a list
+    if isinstance(packages, str):
+        packages = [packages]
+    if isinstance(packages, list) == False:
+        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
+
+    argList = [condaEnvPython, '-m', 'pip', 'install']
+    argList.extend(packages)
+    out = subprocess.run(argList)
+
+    return out
+
+def install_pip(packages, UseCondaDependencies = True, condaChannel = "", condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX')):
+    """A high level function to install Pip package(s)
+
+    This function is mainly a wrapper around the console command:
+    python -m pip install pkg1 pkg2 ... 
+    It installs to the envirionment specified in condaEnv.
+    If UseCondaDependencies is True, it calls a specialized installation 
+    function that prioritizes dependencies to be installed from Conda instead 
+    of Pip to align with best practices. This can be 
+    especially useful when trying to install a package from GitHub that requires
+    it to be installed by Pip, but will allow dependencies that need compiled 
+    binaries to be installed from Conda without a lot of extra work.
+    If UseCondaDependencies is False the arguments condaChannel and CondaExe
+    are ignored.
+
+    Parameters
+    ----------
+    packages : str or list
+        What packages should be installed? Can be either a string or a list of
+        strings.
+    UseCondaDependencies : bool
+        Should dependencies be attempted to be installed with Conda instead of 
+        Pip? Default is True.
+    condaChannel : str
+        You can specify what conda channel you what to install dependencies to
+        here. Example 'conda-forge'. Default is an empty string and will ignore
+        the channel argument when calling conda install.
+    condaExe : str 
+        A conda executable path. Defaults to the 
+        environmental variable 'CONDA_EXE'
+    condaEnv : str
+        A conda environment. Can either be the name of the environment
+        or the full file path ending with the environment (prefix). 
+        Defaults to the environmental variable 'CONDA_PREFIX'.
+
+    Returns
+    -------
+    None
+        This function returns nothing.
+    """
+
+
+    if UseCondaDependencies == True:
+        _install_PipWithCondaDependencies(packages = packages, condaChannel = condaChannel, condaExe = condaExe, condaEnv = condaEnv)
+    elif UseCondaDependencies == False:
+        _install_PipWithOutCondaDependencies(packages = packages, condaEnv = condaEnv)
+
+    return None
