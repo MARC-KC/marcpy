@@ -470,9 +470,9 @@ def install_conda(packages, condaChannel = "", condaExe = os.environ.get('CONDA_
 
     #Print Statement
     printHighlighter = "############################################################################"
-    print(printHighlighter); print(printHighlighter)
+    print(printHighlighter)
     print("Installing the following packages with Conda: '" + "', '".join(packages) + "'.")
-    print(printHighlighter); print(printHighlighter)
+    print(printHighlighter)
 
     # Create list of the install command arguments
     installArgs = [condaExe, 'install']
@@ -491,6 +491,48 @@ def install_conda(packages, condaChannel = "", condaExe = os.environ.get('CONDA_
     return None
 
 
+def __install_pip_subprocess(packages, condaEnvPython):
+    """Install packages with Pip (main subprocess call)
+
+    This is an entirely internal function. It is called by 
+    _install_PipWithOutCondaDependencies and _install_PipWithCondaDependencies
+    and all it just holds the process of functionalizing the pip subprocess 
+    call.
+
+    Parameters
+    ----------
+    packages : str or list
+        What packages should be installed? Can be either a string or a list of
+        strings.
+    condaEnv : str
+        The python path in a conda environment. This should be resolved and 
+        checked in the function that calls this function.
+
+    Returns
+    -------
+    subprocess.run object
+        This function returns the object created by the subprocess run function
+        for installing pip packages.
+
+    """
+    #Check packages input and make sure its a list
+    if isinstance(packages, str):
+        packages = [packages]
+    if isinstance(packages, list) == False:
+        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
+
+    #Print Statement
+    printHighlighter = "############################################################################"
+    print(printHighlighter)
+    print("Installing the following packages with Pip: '" + "', '".join(packages) + "'.")
+    print(printHighlighter)
+
+    #Install from pip
+    argList = [condaEnvPython, '-m', 'pip', 'install']
+    argList.extend(packages)
+    out = subprocess.run(argList)
+
+    return out
 
 
 def _install_PipWithCondaDependencies(packages, condaChannel = "", condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX')):
@@ -566,9 +608,10 @@ def _install_PipWithCondaDependencies(packages, condaChannel = "", condaExe = os
             except Exception as e:
                 print(e)
                 # Install dependency from pip
-                tmp = subprocess.run([condaEnvPython, '-m', 'pip', 'install', depPkg])
+                tmp = __install_pip_subprocess(packages = packages, condaEnvPython = condaEnvPython)
 
-        out = subprocess.run([condaEnvPython, '-m', 'pip', 'install', pkg])
+
+        out = __install_pip_subprocess(packages = packages, condaEnvPython = condaEnvPython)
 
     return None
 
@@ -602,33 +645,13 @@ def _install_PipWithOutCondaDependencies(packages, condaEnv = os.environ.get('CO
     #Get Environment Python Executable
     condaEnvPython = os.path.join(condaEnv, "python.exe")
 
-    #Check packages input and make sure its a list
-    if isinstance(packages, str):
-        packages = [packages]
-    if isinstance(packages, list) == False:
-        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
-
-    #Install from pip
-    argList = [condaEnvPython, '-m', 'pip', 'install']
-    argList.extend(packages)
-    out = subprocess.run(argList)
+    #Install with pip
+    out = __install_pip_subprocess(packages = packages, condaEnvPython = condaEnvPython)
     if out.returncode != 0:
         raise RuntimeError("Error installing package(s) with pip. See console output from pip.")
 
     return None
 
-def __install_pip_subprocess(packages, condaEnvPython):
-    #Check packages input and make sure its a list
-    if isinstance(packages, str):
-        packages = [packages]
-    if isinstance(packages, list) == False:
-        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
-
-    argList = [condaEnvPython, '-m', 'pip', 'install']
-    argList.extend(packages)
-    out = subprocess.run(argList)
-
-    return out
 
 def install_pip(packages, UseCondaDependencies = True, condaChannel = "", condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX')):
     """A high level function to install Pip package(s)
