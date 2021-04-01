@@ -701,3 +701,93 @@ def install_pip(packages, UseCondaDependencies = True, condaChannel = "", condaE
         _install_PipWithOutCondaDependencies(packages = packages, condaEnv = condaEnv)
 
     return None
+
+
+def install_packages(packages, UsePip = False, UseCondaDependencies = True, condaChannel = "", condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX')):
+    """A high level function to install Canda and/or Pip package(s)
+
+    This function is mainly a wrapper around the install_Conda and install_Pip
+    functions and allows one to install a list of packages from either Conda or 
+    Pip, optionally attempt to install Conda based dependencies when installing 
+    from Pip and optionally install from a specific Conda channel when 
+    installing from Conda. It installs to the envirionment specified in condaEnv.
+
+    If UseCondaDependencies is True, it calls a specialized installation 
+    function that prioritizes dependencies to be installed from Conda instead 
+    of Pip to align with best practices. This can be 
+    especially useful when trying to install a package from GitHub that requires
+    it to be installed by Pip, but will allow dependencies that need compiled 
+    binaries to be installed from Conda without a lot of extra work.
+    If UsePip is True and UseCondaDependencies is False the arguments 
+    condaChannel and CondaExe are ignored.
+
+    Parameters
+    ----------
+    packages : str or list of str
+        What packages should be installed? Can be either a string or a list of
+        strings.
+    UsePip : bool or list of bool
+        Should the packages be installed with Pip or Conda. The default (False)
+        installs packages to Conda. Can either be a single True/False or a list 
+        of True/False that is the same length of the packages argument. This 
+        allows you to install some packages with Conda and some packages with 
+        Pip in a single statement.
+    UseCondaDependencies : bool
+        Should dependencies be attempted to be installed with Conda instead of 
+        Pip? Default is True.
+    condaChannel : str
+        You can specify what conda channel you what to install dependencies to
+        here. Example 'conda-forge'. Default is an empty string and will ignore
+        the channel argument when calling conda install.
+    condaExe : str 
+        A conda executable path. Defaults to the 
+        environmental variable 'CONDA_EXE'
+    condaEnv : str
+        A conda environment. Can either be the name of the environment
+        or the full file path ending with the environment (prefix). 
+        Defaults to the environmental variable 'CONDA_PREFIX'.
+
+    Returns
+    -------
+    None
+        This function returns nothing.
+    """
+
+
+    #Enforce list types for packages and UsePip
+    if isinstance(packages, str):
+        packages = [packages]
+    if isinstance(UsePip, bool):
+        UsePip = [UsePip]
+    if isinstance(packages, list) == False:
+        raise RuntimeError("Input for packages must be either a single string or a list of strings.")
+    if isinstance(UsePip, list) == False:
+        raise RuntimeError("Input for UsePip must be either a single string or a list of strings.")
+    
+    #Check that lengths of packages and UsePip are compatable
+    if len(packages) != len(UsePip):
+        if len(packages) > len(UsePip) and len(UsePip) == 1:
+            UsePip = UsePip * len(packages)
+        else:
+            raise RuntimeError("Input for UsePip should have a length of 1 or be the same length as packages")
+
+    # packages
+    # UsePip
+
+    #Seperate into Conda and Pip package
+    packagesPip = numpy.array(packages)[UsePip].tolist()
+    packagesConda = numpy.array(packages)[numpy.invert(numpy.array(UsePip))].tolist()
+
+    if len(packagesConda) > 0:
+        # Install Conda packages
+        install_conda(packages = packagesConda, condaChannel = condaChannel, condaExe = condaExe, condaEnv = condaEnv)
+
+    if len(packagesPip) > 0:
+        # Install Pip packages
+        install_pip(packages = packagesPip, UseCondaDependencies = UseCondaDependencies, condaChannel = condaChannel, condaExe = condaExe, condaEnv = condaEnv)
+
+    
+    return None
+
+
+
