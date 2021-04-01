@@ -211,10 +211,11 @@ def list_packages(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.
     # This function has had a bug for at least 6 years (https://github.com/conda/conda/issues/1775) where it
     #    excludes Pip packages in the json return.
     #+++++++++++++++++++++++++++++
-    #Pull the JSON and format it into a python table
+    #Pull the JSON and format it into a python table (filter out pypi packages)
     rawJson = subprocess.check_output([condaExe, 'list', '--prefix', condaEnv, '--json']).decode("utf-8")
     pdJson = pandas.read_json(StringIO(rawJson))
     pdOut = pdJson[["name", "version", "channel"]]
+    pdOut = pdOut[pdOut['channel'] != "pypi"]
     pdOut = pdOut.assign(pipRemote=numpy.nan)
 
     #If pip is not providing packages just return the formatted output fromm `conda list --prefix /paht/to/conda/env --json`
