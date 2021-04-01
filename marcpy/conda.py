@@ -1,6 +1,7 @@
 """This module holds helper functions for working with and managing Conda
 environments.
 """
+
 import json
 import os
 from io import StringIO
