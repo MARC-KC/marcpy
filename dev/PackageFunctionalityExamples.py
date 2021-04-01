@@ -10,9 +10,14 @@ import marcpy
 
 marcpy.conda.list_envs()
 marcpy.conda.list_packages()
+
 marcpy.conda.env_snapshot()
 marcpy.conda.env_snapshot(generalizeGitRemotes=True)
 
+
+marcpy.conda.install_packages(packages = ['selenium', 'selenium-wire'], UsePip = [False, True], UseCondaDependencies=True)
+marcpy.conda.install_pip(packages = 'selenium-wire', UseCondaDependencies=True, condaChannel="conda-forge")
+marcpy.conda.install_conda(packages = ['selenium'])
 #+++++++++++++++++++++++++++++++
 
 
