@@ -1,4 +1,4 @@
-
+# conda install numpy pandas keyring pyodbc
 # pip install git+https://github.com/MARC-KC/marcpy@main
 # pip install -e L:\GitHub\marcpy
 
