@@ -5,6 +5,7 @@ dependencies:
   - blas=1.0
   - ca-certificates=2021.1.19
   - certifi=2020.12.5
+  - fsspec=0.8.7
   - importlib-metadata=3.7.3
   - intel-openmp=2020.2
   - keyring=22.3.0
@@ -33,4 +34,3 @@ dependencies:
   - pip:
     - git+https://github.com/MARC-KC/marcpy
 prefix: L:\GitHub\marcpy\CondaEnvs\marcpyPRD
-
