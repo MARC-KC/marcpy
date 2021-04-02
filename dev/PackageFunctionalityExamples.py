@@ -14,6 +14,14 @@ marcpy.conda.list_packages()
 marcpy.conda.env_snapshot()
 marcpy.conda.env_snapshot(generalizeGitRemotes=True)
 
+marcpy.conda.env_create(newEnvLocation = "L:\\CondaEnvs\\test3", packages = "", condaChannel = "", pythonVersion = "3.7")
+marcpy.conda.env_create_from_YML(newEnvLocation = "L:\\CondaEnvs\\test4", envYML = "L:\\GitHub\\marcpy\\environment.yml")
+marcpy.conda.env_clone(newEnvLocation = "L:\\CondaEnvs\\test5", cloneEnv = "marcRwebscraper")
+
+marcpy.conda.env_remove(condaEnvToRemove="L:\\CondaEnvs\\test3")
+marcpy.conda.env_remove(condaEnvToRemove="L:\\CondaEnvs\\test4")
+marcpy.conda.env_remove(condaEnvToRemove="L:\\CondaEnvs\\test5")
+
 
 marcpy.conda.install_packages(packages = ['selenium', 'selenium-wire'], UsePip = [False, True], UseCondaDependencies=True)
 marcpy.conda.install_pip(packages = 'selenium-wire', UseCondaDependencies=True, condaChannel="conda-forge")
