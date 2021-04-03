@@ -429,7 +429,7 @@ def env_snapshot(condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.g
 
 
 
-def _env_CreateOrClone(newEnvLocation, envYML = "", cloneEnv = "", packages = "", condaChannel = "", pythonVersion = "", condaExe = os.environ.get('CONDA_EXE')):
+def _env_CreateOrClone(newEnvLocation, envYML = "", cloneEnv = "", packages = "", condaChannel = "", pythonVersion = "3.7", condaExe = os.environ.get('CONDA_EXE')):
     """Create or Clone Conda Environments
 
     This is low-level internal function used by more specific creation 
@@ -461,8 +461,9 @@ def _env_CreateOrClone(newEnvLocation, envYML = "", cloneEnv = "", packages = ""
         cloneEnv arguments are used.
     pythonVersion : str
         The Python version you want to install. The default value 
-        will install the default version of Python. Ignored if envYML or 
-        cloneEnv arguments are used.
+        will install version 3.7 of Python (Seems to work best with ArcGIS's
+        arcpy package). Ignored if envYML or cloneEnv arguments are used or if
+        python is listed in the packages argument.
     condaExe : str 
         A conda executable path. Defaults to the 
         environmental variable 'CONDA_EXE'
@@ -485,8 +486,10 @@ def _env_CreateOrClone(newEnvLocation, envYML = "", cloneEnv = "", packages = ""
     #Create initial argument list (slightly different command when creating from yml file)
     # if envYML == "" and cloneEnv == "":
     if envYML == "":
+        # For an envrionment clone or scratch creation
         createEnvArgs = [condaExe, 'create', '--prefix', newEnvLocation, '-y']
     else:
+        # For creating from YML
         createEnvArgs = [condaExe, 'env', 'create', '--prefix', newEnvLocation]
 
     #Create from environment.yml file
@@ -499,13 +502,20 @@ def _env_CreateOrClone(newEnvLocation, envYML = "", cloneEnv = "", packages = ""
         cloneEnv = _env_resolve(condaExe, cloneEnv)
 
         createEnvArgs.extend(['--clone', cloneEnv])
+        
 
-    #Create from scratch (no YML or clone env)
+    #Create environment
+    print("Calling `" + " ".join(createEnvArgs) + "` in the cmd console.")
+    out = subprocess.run(createEnvArgs)
+
+    #Create from scratch [Step 2] (no YML or clone env) (Install packages)
     if envYML == "" and cloneEnv == "":
         
+        condaInstallArgs = [condaExe, 'install', '--prefix', newEnvLocation]
+
         #Add channel argument
         if condaChannel != "":
-            createEnvArgs.extend(['--channel', condaChannel])
+            condaInstallArgs.extend(['--channel', condaChannel])
 
         #Add package arguments 
         if packages == "":
@@ -521,14 +531,22 @@ def _env_CreateOrClone(newEnvLocation, envYML = "", cloneEnv = "", packages = ""
                 packages = [packages]
             if isinstance(packages, list) == False:
                 raise RuntimeError("Input for packages must be either a single string or a list of strings.")
+            
+            #Add python if needed
+            if not any(list(map(lambda x:  x == "python" or x.startswith("python="), packages))):
+                if pythonVersion == "":
+                    packages.extend(["python"])
+                else:
+                    packages.extend(['python=' + pythonVersion])
 
-        createEnvArgs.extend(packages)
+        condaInstallArgs.extend(packages)
 
-        
+        #Don't prompt
+        condaInstallArgs.extend(["-y"])
 
-    #Create environment
-    print("Calling `" + " ".join(createEnvArgs) + "` in the cmd console.")
-    out = subprocess.run(createEnvArgs)
+        #Run Conda install.
+        out2 = subprocess.run(condaInstallArgs)
+        out = [out, out2]
 
     return out
 
@@ -556,7 +574,8 @@ def env_create(newEnvLocation, packages = "", condaChannel = "", pythonVersion =
         the channel argument when calling conda install. 
     pythonVersion : str
         The Python version you want to install. The default value 
-        will install the default version of Python.
+        will install version 3.7 of Python (Seems to work best with ArcGIS's
+        arcpy package). Ignored if python is listed in the packages argument.
     condaExe : str 
         A conda executable path. Defaults to the 
         environmental variable 'CONDA_EXE'

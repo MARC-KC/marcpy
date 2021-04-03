@@ -8,9 +8,9 @@ newEnvLocation = "L:\\CondaEnvs\\test4"
 envYML = "L:\\GitHub\\marcpy\\environment.yml"
 # envYML = ""
 cloneEnv = "marcRwebscraper" 
-packages = "" 
+packages = ["test, test2"]
 condaChannel = ""
-pythonVersion = "3.6"
+pythonVersion = "3.7"
 condaExe = os.environ.get('CONDA_EXE')
 
 def _env_CreateOrClone(newEnvLocation, envYML = "", cloneEnv = "", packages = "", condaChannel = "", pythonVersion = "", condaExe = os.environ.get('CONDA_EXE')):
@@ -267,4 +267,16 @@ env_clone(newEnvLocation = "L:\\CondaEnvs\\test6", cloneEnv = "marcRwebscraper")
 env_remove(condaEnvToRemove="L:\\CondaEnvs\\test3")
 env_remove(condaEnvToRemove="L:\\CondaEnvs\\test4")
 env_remove(condaEnvToRemove="L:\\CondaEnvs\\test5")
+
+
+pythonVersion="3.7"
+packages = ["numpy", "test", "python=3.2", "test2"]
+packages = ["numpy", "test", "python", "test2"]
+packages = ["numpy", "test", "py", "test2"]
+
+not any(list(map(lambda x:  x == "python" or x.startswith("python="), packages)))
+
+env_create(newEnvLocation = "L:\\CondaEnvs\\test1", packages = "keyring", condaChannel = "", pythonVersion = "3.7")
+env_create(newEnvLocation = "L:\\CondaEnvs\\test2", packages = ["keyring", 'python=3.6'], condaChannel = "", pythonVersion = "3.7")
+env_create(newEnvLocation = "L:\\CondaEnvs\\test4", packages = ["numpy", 'python=3.6'], condaChannel = "", pythonVersion = "3.7")
 
