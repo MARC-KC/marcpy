@@ -1,4 +1,5 @@
-# conda install numpy pandas keyring pyodbc
+# conda install python=3.7 numpy pandas keyring pyodbc
+# conda install arcpy --channel esri
 # pip install git+https://github.com/MARC-KC/marcpy@main
 # pip install -e L:\GitHub\marcpy
 
