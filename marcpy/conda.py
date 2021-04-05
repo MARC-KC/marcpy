@@ -889,7 +889,7 @@ def _install_PipWithCondaDependencies(packages, condaChannel = "", condaExe = os
     for pkg in packages:
 
         # Get an array of uninstalled package dependencies given an installation.
-        depCheck = subprocess.run([condaEnvPython, '-m', 'pip', 'download', pkg, "-d", os.environ.get("TEMP")], capture_output=True)
+        depCheck = subprocess.run([condaEnvPython, '-m', 'pip', 'download', pkg, "-d", os.environ.get("TEMP"), "--exists-action", "w"], capture_output=True)
         if depCheck.returncode != 0:
             raise RuntimeError("Error finding package distribution in pip for the package '" + pkg + "'. Please check the name is correct.")
             
