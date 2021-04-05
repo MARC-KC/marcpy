@@ -10,4 +10,4 @@ from marcpy.keyring_wrappers import key_get
 from marcpy.keyring_wrappers import key_delete
 
 #Defines what supmodules should be imported when using $ from marcpy import *
-__all__ = ['conda', 'sql']
+# __all__ = ['conda', 'sql']
