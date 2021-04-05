@@ -117,3 +117,15 @@ marcpy.gitcreds.gitcreds_delete()
 #Create a PAT in GitHub (opens in your browser)
 marcpy.gitcreds.gitcreds_createPAT()
 #+++++++++++++++++++++++++++++++
+
+
+#+++++++++++++++++++++++++++++++
+# arcpy_wrappers
+#+++++++++++++++++++++++++++++++
+import marcpy.arcpy_wrappers
+
+marcpy.arcpy_wrappers.Walk(workspace = "C:\\Users\\jpeterson\\Documents\\ArcGIS\\Projects\\MyProject1", datatype = "FeatureClass", pathType = 'Relative')
+
+#+++++++++++++++++++++++++++++++
+
+
