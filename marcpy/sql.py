@@ -4,7 +4,7 @@ MARC uses.
 """
 
 import pyodbc
-from marcpy import keyringHelper
+from marcpy import keyring_wrappers
 
 def connectODBC(databaseString):
     """Connect to ODBC Database Using keyring
@@ -30,7 +30,7 @@ def connectODBC(databaseString):
     serviceName = ":DB_conn:" + databaseString
 
     #Retrieve database connection string
-    connString = keyringHelper.key_get("DB_conn", databaseString)
+    connString = keyring_wrappers.key_get("DB_conn", databaseString)
 
     #Create database connection.
     conn = pyodbc.connect(connString)
