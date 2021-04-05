@@ -5,7 +5,7 @@
 
 
 #+++++++++++++++++++++++++++++++
-# Using Keyring and the Windows Credential Manager
+# Using Canda and pip from the python REPL
 #+++++++++++++++++++++++++++++++
 import marcpy
 
@@ -29,6 +29,11 @@ marcpy.conda.install_pip(packages = 'selenium-wire', UseCondaDependencies=True, 
 marcpy.conda.install_conda(packages = ['selenium'])
 #+++++++++++++++++++++++++++++++
 
+#Example for setting up a new envrionment with arcpy and marcpy
+newCondaEnv = "X:\DataDevelopment\Administrative\MARCAGOtoMARCMETA\CondaEnvs\MARCAGOtoMARCMETA2"
+marcpy.conda.env_create(newEnvLocation = newCondaEnv, packages = ["python=3.7", 'numpy', 'pandas', 'keyring', "pyodbc"], condaChannel = "")
+marcpy.conda.install_conda(packages = ['arcpy'], condaChannel="esri", condaEnv = newCondaEnv)
+marcpy.conda.install_pip(packages = ["git+https://github.com/MARC-KC/marcpy"], UseCondaDependencies = False, condaEnv = newCondaEnv)
 
 
 #+++++++++++++++++++++++++++++++
