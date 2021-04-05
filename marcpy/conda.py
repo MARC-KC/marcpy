@@ -920,7 +920,7 @@ def _install_PipWithCondaDependencies(packages, condaChannel = "", condaExe = os
     return None
 
 
-def _install_PipWithOutCondaDependencies(packages, condaEnv = os.environ.get('CONDA_PREFIX')):
+def _install_PipWithOutCondaDependencies(packages, condaExe = os.environ.get('CONDA_EXE'), condaEnv = os.environ.get('CONDA_PREFIX')):
     """Install Pip package(s)
 
     A wrapper for the console command: 
