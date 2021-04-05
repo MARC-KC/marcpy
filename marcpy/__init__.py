@@ -5,9 +5,9 @@ import marcpy.sql
 import marcpy.utils
 
 #Import select functions to the main package
-from marcpy.keyringHelper import key_set
-from marcpy.keyringHelper import key_get
-from marcpy.keyringHelper import key_delete
+from marcpy.keyring_wrappers import key_set
+from marcpy.keyring_wrappers import key_get
+from marcpy.keyring_wrappers import key_delete
 
 #Defines what supmodules should be imported when using $ from marcpy import *
 __all__ = ['conda', 'sql']
