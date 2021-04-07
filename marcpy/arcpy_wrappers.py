@@ -125,7 +125,7 @@ def WalkGDB(searchFolder = 'U:\\Projects\\GIS_Services', datatypes = ["FeatureCl
                     tmp = pandas.DataFrame.from_dict({"GeoDatabase": [folderPath] * len(tmp), "Feature": tmp, "DataType": [datatype] * len(tmp)})
                     outLst.extend([tmp])
                 out.extend([pandas.concat(outLst, ignore_index=True)])
-                
+    
     #Combine list of datafames into one output dataframe
     output = pandas.concat(out, ignore_index=True)
     return output
