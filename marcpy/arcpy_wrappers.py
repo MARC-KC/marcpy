@@ -71,7 +71,7 @@ def Walk(workspace, datatype = None, type = None, pathType = 'Full'):
 # Walk(workspace = "C:\\Users\\jpeterson\\Documents\\ArcGIS\\Projects\\MyProject1", datatype = ["FeatureClass", "RasterDataset"], pathType = 'Relative')
 
 
-def WalkGDB(searchFolder = 'U:\\Projects\\GIS_Services', datatypes = ["FeatureClass", "Table", "RasterCatalog", "RasterDataset"], pathType = "Relative"):
+def WalkGDB(searchFolder, datatypes = ["FeatureClass", "Table", "RasterCatalog", "RasterDataset"], pathType = "Relative"):
     """Walk all Geodatabases in the search folder and get a dataframe of the features
     
     This is a wrapper around `marcpy.arcpy_wrappers.Walk()` that allows you 
@@ -131,5 +131,5 @@ def WalkGDB(searchFolder = 'U:\\Projects\\GIS_Services', datatypes = ["FeatureCl
     return output
 
 
-# WalkGDB()
+# WalkGDB('U:\\Projects\\GIS_Services')
 

@@ -125,7 +125,7 @@ marcpy.gitcreds.gitcreds_createPAT()
 import marcpy.arcpy_wrappers
 
 marcpy.arcpy_wrappers.Walk(workspace = "C:\\Users\\jpeterson\\Documents\\ArcGIS\\Projects\\MyProject1", datatype = "FeatureClass", pathType = 'Relative')
-marcpy.arcpy_wrappers.WalkGDB()
+marcpy.arcpy_wrappers.WalkGDB('U:\\Projects\\GIS_Services')
 
 #+++++++++++++++++++++++++++++++
 
