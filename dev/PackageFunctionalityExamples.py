@@ -62,6 +62,14 @@ marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcdl")
 # Driver={ODBC Driver 17 for SQL Server};Server=phantoms;Database=MARC_DEV;UID=marcdl;PWD=<password>;
 
 
+#Passwords for the username should be stored in Keeper
+marcpy.key_set(serviceName="ArcGIS", userName="jpeterson_MARC_GIS")
+marcpy.key_get(serviceName="ArcGIS", userName="jpeterson_MARC_GIS")
+marcpy.key_set(serviceName="ArcGIS", userName="MARC_Admin")
+marcpy.key_get(serviceName="ArcGIS", userName="MARC_Admin")
+
+
+
 marcpy.key_set(serviceName="", userName="API_KEY")
 marcpy.key_get(serviceName="", userName="API_KEY")
 marcpy.key_delete(serviceName="", userName="API_KEY")
@@ -129,4 +137,14 @@ marcpy.arcpy_wrappers.WalkGDB('U:\\Projects\\GIS_Services')
 
 #+++++++++++++++++++++++++++++++
 
+
+#+++++++++++++++++++++++++++++++
+# arcgis_wrappers
+#+++++++++++++++++++++++++++++++
+import marcpy.arcgis_wrappers
+
+marcpy.arcgis_wrappers.connectArcGIS()
+marcpy.arcgis_wrappers.connectArcGIS(username="jpeterson_MARC_GIS")
+marcpy.arcgis_wrappers.connectArcGIS(username="MARC_Admin")
+#+++++++++++++++++++++++++++++++
 
