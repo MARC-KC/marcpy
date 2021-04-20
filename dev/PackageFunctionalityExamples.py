@@ -53,6 +53,8 @@ marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcpub")
 marcpy.key_set(serviceName="DB_conn", userName="MARC_DEV.marcdl")
 marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcdl")
 
+marcpy.key_set(serviceName="DB_conn", userName="MARC_META.marcpub")
+marcpy.key_get(serviceName="DB_conn", userName="MARC_META.marcpub")
 
 # Driver={ODBC Driver 17 for SQL Server};Server=<serverName>;Database=<databaseName>;UID=<schemaName>;PWD=<password>;
 
@@ -60,6 +62,7 @@ marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcdl")
 # Driver={ODBC Driver 17 for SQL Server};Server=knights;Database=MARC_PRD;UID=marcdl;PWD=<password>;
 # Driver={ODBC Driver 17 for SQL Server};Server=phantoms;Database=MARC_DEV;UID=marcpub;PWD=<password>;
 # Driver={ODBC Driver 17 for SQL Server};Server=phantoms;Database=MARC_DEV;UID=marcdl;PWD=<password>;
+# Driver={ODBC Driver 17 for SQL Server};Server=chiefs;Database=MARC_META;UID=marcpub;PWD=<password>;
 
 
 #Passwords for the username should be stored in Keeper
