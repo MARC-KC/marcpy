@@ -90,15 +90,15 @@ import marcpy
 import pandas
 import pyodbc
 
-PUBconn = marcpy.sql.connectODBC("MARC_PUB.marcpub")
+PUBconn = marcpy.connectODBC("MARC_PUB.marcpub")
 type(PUBconn)
 
 sql = "SELECT * FROM CovidCaseDeathTest"
-test = pandas.read_sql(sql, PUBconn)
+test = marcpy.getOBDCtable(PUBconn, sql)
 test
 
 sql = "SELECT * FROM CovidHospital"
-test2 = pandas.read_sql(sql, PUBconn)
+test2 = marcpy.getOBDCtable(PUBconn, sql)
 test2
 #+++++++++++++++++++++++++++++++
 
