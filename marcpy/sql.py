@@ -25,7 +25,7 @@ def connectODBC(databaseString):
 
     Returns
     -------
-    {pyodbc} connection
+    pyodbc.Connection
         A {pyodbc} connection object for the SQL Database.
     """
 
@@ -89,7 +89,7 @@ def getOBDCtable(conn, query):
     
     Parameters
     ----------
-    conn : {pyodbc} connection
+    conn : pyodbc.Connection
         A {pyodbc} connection object for the SQL Database.
     query : str
         SQL Query to server to request table
