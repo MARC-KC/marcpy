@@ -9,5 +9,8 @@ from marcpy.keyring_wrappers import key_set
 from marcpy.keyring_wrappers import key_get
 from marcpy.keyring_wrappers import key_delete
 
+from marcpy.sql import connectODBC
+from marcpy.sql import getOBDCtable
+
 #Defines what supmodules should be imported when using $ from marcpy import *
 # __all__ = ['conda', 'sql']
