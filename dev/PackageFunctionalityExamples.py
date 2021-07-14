@@ -93,16 +93,20 @@ import marcpy
 
 import pandas
 import pyodbc
+import sqlalchemy
 
 PUBconn = marcpy.connectODBC("MARC_PUB.marcpub")
+PUBconn
 type(PUBconn)
+type(PUBconn['pyodbc'])
+type(PUBconn['sqlalchemy'])
 
 sql = "SELECT * FROM CovidCaseDeathTest"
-test = marcpy.getOBDCtable(PUBconn, sql)
+test = marcpy.getOBDCtable(PUBconn['pyodbc'], sql)
 test
 
 sql = "SELECT * FROM CovidHospital"
-test2 = marcpy.getOBDCtable(PUBconn, sql)
+test2 = marcpy.getOBDCtable(PUBconn['pyodbc'], sql)
 test2
 #+++++++++++++++++++++++++++++++
 

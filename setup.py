@@ -18,7 +18,8 @@ INSTALL_REQUIRES = [
       'numpy', #conda
       'pandas>=1.0', #conda, sql
       'keyring', #keyring_wrappers, gitcreds
-      'pyodbc' #keyring_wrappers, sql
+      'pyodbc', #keyring_wrappers, sql
+      'sqlalchemy' #sql
 ]
 
 setup(name=PACKAGE_NAME,

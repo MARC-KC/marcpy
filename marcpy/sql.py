@@ -3,8 +3,10 @@ functions may be hardcoded to work with Microsoft SQL Servers as that is what
 MARC uses.
 """
 import datetime
+import urllib.parse
 
 import pyodbc
+import sqlalchemy
 from marcpy import keyring_wrappers
 import numpy
 import pandas
@@ -16,29 +18,36 @@ def connectODBC(databaseString):
     in keyrings. This is generally used for internal purposes at MARC to make 
     database connections a lazier and safer proccess with {keyring}. See 
     documentation at ### to set up database connection keys.
-
+    
     Parameters
     ----------
     databaseString : str 
         The username for the keyring object you are wanting to connect to. In 
         the format of '<DB_Name>.<Schema>'.
-
+    
     Returns
     -------
     pyodbc.Connection
         A {pyodbc} connection object for the SQL Database.
     """
-
+    
     #Create Service Name
     serviceName = ":DB_conn:" + databaseString
-
+    
     #Retrieve database connection string
     connString = keyring_wrappers.key_get("DB_conn", databaseString)
-
-    #Create database connection.
+    
+    #Create pyodbc database connection.
     conn = pyodbc.connect(connString)
-
-    return conn
+    
+    #Create sqlalchemy engine connection
+    quotedConnString = urllib.parse.quote_plus(connString)
+    engine = sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect={}'.format(quotedConnString))
+    
+    #Create return dictionary
+    out = {'pyodbc':conn, 'sqlalchemy':engine}
+    
+    return out
 
 
 
