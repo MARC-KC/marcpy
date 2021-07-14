@@ -11,6 +11,7 @@ from marcpy import keyring_wrappers
 import numpy
 import pandas
 
+# databaseString = "MARC_PUB.marcpub"
 def connectODBC(databaseString):
     """Connect to ODBC Database Using keyring
     
@@ -27,8 +28,14 @@ def connectODBC(databaseString):
     
     Returns
     -------
-    pyodbc.Connection
-        A {pyodbc} connection object for the SQL Database.
+    dictionary
+        Contains a dictionary with the following elements:
+            'pyodbc' - pyodbc.Connection - A {pyodbc} connection object for the 
+                SQL Database.
+            'sqlalchemy' - sqlalchemy.engine - An odbc based connection string 
+                object for connections to the SQL Database using {sqlalchemy}.
+            'details' - dictionary - holds plain text connection details. Has 
+                the keys: 'Driver', 'Server', 'Database', 'UID', and 'PWD'
     """
     
     #Create Service Name
@@ -36,6 +43,10 @@ def connectODBC(databaseString):
     
     #Retrieve database connection string
     connString = keyring_wrappers.key_get("DB_conn", databaseString)
+    
+    #Parse string into details dictionary.
+    lst_details = [{x.split("=", 1)[0] : x.split("=", 1)[1]} for x in connString.split(";")[0:-1]]
+    details = dict((key, d[key]) for d in lst_details for key in d)
     
     #Create pyodbc database connection.
     conn = pyodbc.connect(connString)
@@ -45,7 +56,7 @@ def connectODBC(databaseString):
     engine = sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect={}'.format(quotedConnString))
     
     #Create return dictionary
-    out = {'pyodbc':conn, 'sqlalchemy':engine}
+    out = {'pyodbc':conn, 'sqlalchemy':engine, 'details':details}
     
     return out
 

@@ -100,6 +100,7 @@ PUBconn
 type(PUBconn)
 type(PUBconn['pyodbc'])
 type(PUBconn['sqlalchemy'])
+type(PUBconn['details'])
 
 sql = "SELECT * FROM CovidCaseDeathTest"
 test = marcpy.getOBDCtable(PUBconn['pyodbc'], sql)
