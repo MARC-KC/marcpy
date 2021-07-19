@@ -160,3 +160,24 @@ marcpy.arcgis_wrappers.connectArcGIS(username="jpeterson_MARC_GIS")
 marcpy.arcgis_wrappers.connectArcGIS(username="MARC_Admin")
 #+++++++++++++++++++++++++++++++
 
+
+#+++++++++++++++++++++++++++++++
+# anti_join
+#+++++++++++++++++++++++++++++++
+import marcpy
+import numpy as np
+import pandas as pd
+
+npData = np.random.rand(8, 3)
+TableA = pd.DataFrame(npData,
+                      columns = ['A', 'B', 'C']).reset_index()
+TableB = pd.DataFrame(npData[[0,1,2,3,4,7]],
+                      columns = ['A', 'B', 'C']).reset_index()
+marcpy.anti_join(df_left = TableA, df_right = TableB, on = ['A', 'B', 'C'])
+
+TableC = pd.DataFrame(npData,
+                      columns = ['A', 'B', 'C']).reset_index()
+TableD = pd.DataFrame(npData[[0,1,2,3,4,7]],
+                      columns = ['a', 'b', 'F']).reset_index()
+marcpy.anti_join(df_left = TableC, df_right = TableD, on = {'A':'a', 'B':'b', 'C':'F'})
+#+++++++++++++++++++++++++++++++

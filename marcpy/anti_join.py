@@ -1,6 +1,7 @@
 """This module holds the anti_join function to mimic the anti_join in R's 
 {dplyr} package.
 """
+import re
 
 import pandas as pd
 
@@ -37,11 +38,12 @@ def anti_join(df_left, df_right, on):
     
     #Do Right Outer Join
     if isinstance(on, dict):
-        df_outer = pd.merge(df_left, df_right,  how='left', left_on=list(on.keys()), right_on = list(on.values()))
+        df_outer = pd.merge(df_left, df_right,  how='left', left_on=list(on.keys()), right_on = list(on.values()), suffixes = ('_SuffixLeft', '_SuffixRight'))
     elif isinstance(on, list):
-        df_outer = pd.merge(df_left, df_right,  how='left', on=on)
+        df_outer = pd.merge(df_left, df_right,  how='left', on=on, suffixes = ('_SuffixLeft', '_SuffixRight'))
     
     #Filter out missing columns from left and clean up anti_join returning in same format as df_right
+    df_outer.columns = list(map(lambda x: re.sub('_SuffixLeft$', '', x), df_outer.columns))
     df_anti = df_outer.loc[pd.isna(df_outer['_index_right']), list(df_left.columns)].set_index('_index_left')
     df_anti.rename_axis(None, axis=0, inplace=True)
     
