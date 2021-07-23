@@ -41,23 +41,35 @@ marcpy.conda.install_pip(packages = ["git+https://github.com/MARC-KC/marcpy"], U
 #+++++++++++++++++++++++++++++++
 import marcpy
 
-marcpy.key_set(serviceName="DB_conn", userName="MARC_PRD.marcdl")
-marcpy.key_get(serviceName="DB_conn", userName="MARC_PRD.marcdl")
+# marcpy.key_set(serviceName="DB_conn", userName="MARC_PRD.marcdl")
+# marcpy.key_get(serviceName="DB_conn", userName="MARC_PRD.marcdl")
+marcpy.key_set(serviceName="DB_conn", userName="knights.marc_prd.marcdl")
+marcpy.key_get(serviceName="DB_conn", userName="knights.marc_prd.marcdl")
 
-marcpy.key_set(serviceName="DB_conn", userName="MARC_PUB.marcpub")
-marcpy.key_get(serviceName="DB_conn", userName="MARC_PUB.marcpub")
+# marcpy.key_set(serviceName="DB_conn", userName="MARC_PUB.marcpub")
+# marcpy.key_get(serviceName="DB_conn", userName="MARC_PUB.marcpub")
+marcpy.key_set(serviceName="DB_conn", userName="chiefs.marc_pub.marcpub")
+marcpy.key_get(serviceName="DB_conn", userName="chiefs.marc_pub.marcpub")
 
-marcpy.key_set(serviceName="DB_conn", userName="MARC_DEV.marcpub")
-marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcpub")
+# marcpy.key_set(serviceName="DB_conn", userName="MARC_DEV.marcpub")
+# marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcpub")
+marcpy.key_set(serviceName="DB_conn", userName="phantoms.marc_dev.marcpub")
+marcpy.key_get(serviceName="DB_conn", userName="phantoms.marc_dev.marcpub")
 
-marcpy.key_set(serviceName="DB_conn", userName="MARC_DEV.marcdl")
-marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcdl")
+# marcpy.key_set(serviceName="DB_conn", userName="MARC_DEV.marcdl")
+# marcpy.key_get(serviceName="DB_conn", userName="MARC_DEV.marcdl")
+marcpy.key_set(serviceName="DB_conn", userName="phantoms.marc_dev.marcdl")
+marcpy.key_get(serviceName="DB_conn", userName="phantoms.marc_dev.marcdl")
 
-marcpy.key_set(serviceName="DB_conn", userName="MARC_META.marcpub")
-marcpy.key_get(serviceName="DB_conn", userName="MARC_META.marcpub")
+# marcpy.key_set(serviceName="DB_conn", userName="MARC_META.marcpub")
+# marcpy.key_get(serviceName="DB_conn", userName="MARC_META.marcpub")
+marcpy.key_set(serviceName="DB_conn", userName="chiefs.marc_meta.marcpub")
+marcpy.key_get(serviceName="DB_conn", userName="chiefs.marc_meta.marcpub")
 
-marcpy.key_set(serviceName="DB_conn", userName="MARC_META_dev.marcpub")
-marcpy.key_get(serviceName="DB_conn", userName="MARC_META_dev.marcpub")
+# marcpy.key_set(serviceName="DB_conn", userName="MARC_META_dev.marcpub")
+# marcpy.key_get(serviceName="DB_conn", userName="MARC_META_dev.marcpub")
+marcpy.key_set(serviceName="DB_conn", userName="phantoms.marc_meta.marcpub")
+marcpy.key_get(serviceName="DB_conn", userName="phantoms.marc_meta.marcpub")
 
 # Driver={ODBC Driver 17 for SQL Server};Server=<serverName>;Database=<databaseName>;UID=<schemaName>;PWD=<password>;
 

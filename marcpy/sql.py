@@ -11,7 +11,7 @@ from marcpy import keyring_wrappers
 import numpy
 import pandas
 
-# databaseString = "MARC_PUB.marcpub"
+# databaseString = "chiefs.marc_pub.marcpub"
 def connectODBC(databaseString):
     """Connect to ODBC Database Using keyring
     
