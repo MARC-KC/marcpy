@@ -4,6 +4,7 @@ MARC uses.
 """
 import datetime
 import urllib.parse
+import re
 
 import pyodbc
 import sqlalchemy
@@ -157,3 +158,103 @@ def getOBDCtable(conn, query):
     outPdf = pandas.concat(outSeries, axis = 1)
 
     return outPdf
+
+
+
+def dbListSchemas(conn, rmSchemaRegex = ["sys", "sde", "^INFORMATION_SCHEMA$", "^db_\\.*"]):
+    """List all schema in database
+    
+    Searches schema in in the INFORMATION_SCHEMA.SCHEMATA table.
+    Confirmed only to work with MS-SQL databases.
+    
+    Parameters
+    ----------
+    conn : sqlalchemy.Engine
+        A sqlalchemy engine connection to use with pandas.read_sql()
+    rmSchemaRegex : list or None
+        List of characters containing schema regex to avoid searching
+        (removed schema regex). Ignores some default system level schema and schema
+        only used by the ESRI SDE bindings that don't actually contain user created
+        tables.
+    
+    Return
+    ------
+    pandas.Series 
+        A pandas series of schemas at the connection.
+    """
+    
+    all_schema = pandas.read_sql("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA", conn)['SCHEMA_NAME']
+    
+    if rmSchemaRegex is None or len(rmSchemaRegex) == 0:
+        out = all_schema
+    else:
+        out = all_schema[~all_schema.apply(lambda x: bool(re.search("|".join(rmSchemaRegex), x)))]
+    
+    return out
+
+
+def dbTableStructure(conn, addGeoIndicator = False, includeViews = True, rmTableRegex = ["^[a-zA-Z]\d+$", "^SDE_"], rmSchemaRegex = ["sde"]):
+    """List all tables in a database
+    
+    Searches tables in in the INFORMATION_SCHEMA.TABLES table. This functions 
+    also pairs each table with its schema and can handle checking if the table 
+    has spatial data and identify if it is a view.
+    Confirmed only to work with MS-SQL databases.
+    
+    Parameters
+    ----------
+    conn : sqlalchemy.Engine
+        A sqlalchemy engine connection to use with pandas.read_sql()
+    addGeoIndicator : boolean
+        Should the `isSpatial` column be exported? Default is FALSE.
+    includeViews : boolean
+        Should output included views?
+    rmTableRegex : list or None
+        List of strings containing table name regex to avoid
+        searching (removed table regex). Ignores some tables that are only used by
+        the ESRI SDE bindings that don't actually contain user created data.
+    rmSchemaRegex : list or None
+        List of strings containing schema regex to avoid searching
+        (removed schema regex). Ignores some default system level schema and schema
+        only used by the ESRI SDE bindings that don't actually contain user created
+        tables.
+    
+    Return
+    ------
+    pandas.Dataframe
+        A pandas dataframe with a row for each table in the database connection.
+        Contains 4 or 5 columns ('Database', 'Schema', 'Table', 'isView', and 
+        optionally 'isSpatial'). The return dataframe can then easily be 
+        searched, filtered, and queried to find the tables you were looking for.
+    """
+    
+    tables = pandas.read_sql("SELECT * FROM INFORMATION_SCHEMA.TABLES", conn)
+    
+    #Filter data
+    if rmTableRegex is not None and len(rmTableRegex) != 0:
+        tables = tables.loc[~tables['TABLE_NAME'].apply(lambda x: bool(re.search("|".join(rmTableRegex), x)))]
+    
+    if rmSchemaRegex is not None and len(rmSchemaRegex) != 0:
+        tables = tables.loc[~tables['TABLE_SCHEMA'].apply(lambda x: bool(re.search("|".join(rmSchemaRegex), x)))]
+    
+    #Add Spatial Indicator
+    if addGeoIndicator:
+        def _isGeo(row):
+            sqlQuery =  """ SELECT * 
+                            FROM INFORMATION_SCHEMA.COLUMNS 
+                            WHERE TABLE_SCHEMA = '{schema}' AND TABLE_NAME = '{table}' AND (DATA_TYPE = 'geometry' OR DATA_TYPE = 'geography')
+                        """.format(schema = row['TABLE_SCHEMA'], table = row['TABLE_NAME'])
+            return pandas.read_sql(sqlQuery, conn).shape[0] > 0
+        
+        tables['isSpatial'] = tables.apply(_isGeo, axis = 1)
+    
+    #Rename Columns
+    tables = tables.rename(columns = {'TABLE_CATALOG':'Database', 'TABLE_SCHEMA':'Schema', 'TABLE_NAME':'Table', 'TABLE_TYPE':'isView'})
+    
+    #Handle Views Column
+    tables['isView'] = tables['isView'] == 'VIEW'
+    if not includeViews:
+        tables = tables[~tables['isView']]
+    
+    return tables
+

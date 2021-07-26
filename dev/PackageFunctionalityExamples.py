@@ -102,12 +102,13 @@ marcpy.key_delete(serviceName="", userName="API_KEY")
 # SQL connections
 #+++++++++++++++++++++++++++++++
 import marcpy
+import marcpy.sql
 
 import pandas
 import pyodbc
 import sqlalchemy
 
-PUBconn = marcpy.connectODBC("MARC_PUB.marcpub")
+PUBconn = marcpy.connectODBC("chiefs.marc_pub.marcpub")
 PUBconn
 type(PUBconn)
 type(PUBconn['pyodbc'])
@@ -121,6 +122,17 @@ test
 sql = "SELECT * FROM CovidHospital"
 test2 = marcpy.getOBDCtable(PUBconn['pyodbc'], sql)
 test2
+
+
+marcpy.sql.dbListSchemas(PUBconn['sqlalchemy'])
+marcpy.sql.dbListSchemas(PUBconn['sqlalchemy'], rmSchemaRegex=None)
+
+marcpy.sql.dbTableStructure(PUBconn['sqlalchemy'])
+marcpy.sql.dbTableStructure(PUBconn['sqlalchemy'],  addGeoIndicator=True)
+marcpy.sql.dbTableStructure(PUBconn['sqlalchemy'], rmSchemaRegex=None, rmTableRegex=None)
+
+
+
 #+++++++++++++++++++++++++++++++
 
 
