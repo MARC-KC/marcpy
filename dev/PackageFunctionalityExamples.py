@@ -71,6 +71,13 @@ marcpy.key_get(serviceName="DB_conn", userName="chiefs.marc_meta.marcpub")
 marcpy.key_set(serviceName="DB_conn", userName="phantoms.marc_meta.marcpub")
 marcpy.key_get(serviceName="DB_conn", userName="phantoms.marc_meta.marcpub")
 
+marcpy.key_set(serviceName="DB_conn", userName="chiefs.tiptracker.tiptracker")
+marcpy.key_get(serviceName="DB_conn", userName="chiefs.tiptracker.tiptracker")
+
+marcpy.key_set(serviceName="DB_conn", userName="chiefs.tr_lrtp.saapp")
+marcpy.key_get(serviceName="DB_conn", userName="chiefs.tr_lrtp.saapp")
+
+
 # Driver={ODBC Driver 17 for SQL Server};Server=<serverName>;Database=<databaseName>;UID=<schemaName>;PWD=<password>;
 
 # Driver={ODBC Driver 17 for SQL Server};Server=chiefs;Database=MARC_PUB;UID=marcpub;PWD=<password>;
@@ -79,6 +86,8 @@ marcpy.key_get(serviceName="DB_conn", userName="phantoms.marc_meta.marcpub")
 # Driver={ODBC Driver 17 for SQL Server};Server=phantoms;Database=MARC_DEV;UID=marcdl;PWD=<password>;
 # Driver={ODBC Driver 17 for SQL Server};Server=chiefs;Database=MARC_META;UID=marcpub;PWD=<password>;
 # Driver={ODBC Driver 17 for SQL Server};Server=phantoms;Database=MARC_META;UID=marcpub;PWD=<password>;
+# Driver={ODBC Driver 17 for SQL Server};Server=chiefs;Database=tiptracker;UID=tiptracker;PWD=<password>;
+# Driver={ODBC Driver 17 for SQL Server};Server=chiefs;Database=tr_lrtp;UID=saapp;PWD=<password>;
 
 
 #Passwords for the username should be stored in Keeper
