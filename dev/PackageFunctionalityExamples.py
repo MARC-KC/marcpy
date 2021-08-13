@@ -188,9 +188,9 @@ marcpy.arcpy_wrappers.WalkGDB('U:\\Projects\\GIS_Services')
 #+++++++++++++++++++++++++++++++
 import marcpy.arcgis_wrappers
 
-marcpy.arcgis_wrappers.connectArcGIS()
-marcpy.arcgis_wrappers.connectArcGIS(username="jpeterson_MARC_GIS")
-marcpy.arcgis_wrappers.connectArcGIS(username="MARC_Admin")
+marcpy.arcgis_wrappers.connectArcGISOnline()
+marcpy.arcgis_wrappers.connectArcGISOnline(username="jpeterson_MARC_GIS")
+marcpy.arcgis_wrappers.connectArcGISOnline(username="MARC_Admin")
 #+++++++++++++++++++++++++++++++
 
 

@@ -13,10 +13,10 @@ except ImportError as e:
     raise RuntimeError(("\n").join(eMessage)) from e
 
 
-def connectArcGIS(username = "pro"):
-    """Create connection for the ArcGIS API using keyring
+def connectArcGISOnline(username = "pro"):
+    """Create connection for the {arcgis} python API using keyring
     
-    Creates connection to the ArcGIS API using the data contained 
+    Creates connection to the {arcgis} python API using the data contained 
     in keyrings (managed securely by the Windows Credential Manager). This is 
     generally used for internal purposes at MARC to make 
     these connections a lazier and safer proccess with {keyring}. See 
@@ -25,7 +25,7 @@ def connectArcGIS(username = "pro"):
     Parameters
     ----------
     databaseString : str 
-        The username for the ArcGIS account you want to connect to. The default
+        The username for the ArcGIS Online account you want to connect to. The default
         "pro" will attempt to connect with the account you are signed into 
         ArcGIS Pro with.
     
@@ -43,8 +43,8 @@ def connectArcGIS(username = "pro"):
     
     return conn
 
-# connectArcGIS()
-# connectArcGIS(username="jpeterson_MARC_GIS")
-# connectArcGIS(username="MARC_Admin")
+# connectArcGISOnline()
+# connectArcGISOnline(username="jpeterson_MARC_GIS")
+# connectArcGISOnline(username="MARC_Admin")
 
 
