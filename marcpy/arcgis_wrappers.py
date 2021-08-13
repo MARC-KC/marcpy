@@ -38,7 +38,7 @@ def connectArcGISOnline(username = "pro"):
     if username == "pro":
         conn = arcgis.gis.GIS(username)
     else:
-        password = keyring_wrappers.key_get("ArcGIS", username)
+        password = keyring_wrappers.key_get("ArcGISOnline", username)
         conn = arcgis.gis.GIS(username=username, password=password)
     
     return conn
