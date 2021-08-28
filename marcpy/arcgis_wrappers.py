@@ -4,6 +4,7 @@ try:
     import arcgis
     import arcgis.gis
 except ImportError as e:
+    import platform
     eMessage = ["No module named 'arcgis'. Please install it from the 'esri' channel from Conda."]
     if platform.python_version_tuple()[0] + "." + platform.python_version_tuple()[1] != "3.7":
         eMessage.extend(["In my limited experience it may be best to rebuild your Conda envrionment with 'python=3.7' to use 'arcgis'.",
