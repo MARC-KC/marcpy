@@ -4,16 +4,16 @@
 
 ## Setup Development Envrionment
 ```powershell
-conda create -p "CondaEnvs/marcpy_dev"
-conda activate "CondaEnvs\marcpy_dev"
+conda create -p "CondaEnvs/marcpyDev"
+conda activate "CondaEnvs/marcpyDev"
 conda install python=3.7 numpy pandas keyring pyodbc sqlalchemy
 conda install arcpy --channel esri
 ```
 
 ## Setup Production Envrionment
 ```powershell
-conda create -p "CondaEnvs/marcpy_prd"
-conda activate "CondaEnvs\marcpy_prd"
+conda create -p "CondaEnvs/marcpyPrd"
+conda activate "CondaEnvs/marcpyPrd"
 conda install python=3.7 numpy pandas keyring pyodbc sqlalchemy
 conda install arcpy --channel esri
 ```
