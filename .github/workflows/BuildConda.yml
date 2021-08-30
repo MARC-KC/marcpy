@@ -52,5 +52,6 @@ jobs:
         run: |
           export ANACONDA_API_TOKEN=${{secrets.SECRET_TOKEN}}
           #cd /opt/conda/conda-bld
-          anaconda auth -i
+          anaconda -t ${{secrets.SECRET_TOKEN}}
+          #anaconda auth -i
           #anaconda upload --user marc-kc --label main noarch/*.tar.bz2
