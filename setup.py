@@ -7,7 +7,7 @@ HERE = pathlib.Path(__file__).parent
 #VERSION = '0.0.1'
 PACKAGE_NAME = 'marcpy'
 AUTHOR = 'MARC Research Services'
-AUTHOR_EMAIL = 'marc_gis@email.com'
+AUTHOR_EMAIL = 'marc_gis@marc.org'
 URL = 'https://github.com/MARC-KC/marcpy'
 
 LICENSE = 'GNUv3'
@@ -24,6 +24,7 @@ INSTALL_REQUIRES = [
 ]
 
 setup(name=PACKAGE_NAME,
+      #version=VERSION,
       version=versioneer.get_version(),
       cmdclass=versioneer.get_cmdclass(),
       description=DESCRIPTION,
@@ -35,15 +36,14 @@ setup(name=PACKAGE_NAME,
       url=URL,
       install_requires=INSTALL_REQUIRES,
       packages=find_packages(),
-      entry_points={
-        'console_scripts': [
-            'marcpy=marcpy.cli:cli'
-        ]
-      },
+      #entry_points={
+      #  'console_scripts': [
+      #      'marcpy=marcpy.cli:cli'
+      #  ]
+      #},
       keywords='marcpy',
-      classifiers=[
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-      ]
+      #classifiers=[
+      #  'Programming Language :: Python :: 3.6',
+      #  'Programming Language :: Python :: 3.7',
+      #]
 )

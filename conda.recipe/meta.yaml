@@ -15,10 +15,10 @@ build:
   script: {{ PYTHON }} -m pip install --no-deps --ignore-installed -vv .
   noarch: python
   
-  entry_points:
-    {% for entry in data['entry_points']['console_scripts'] %}
-      - {{ entry.split('=')[0].strip() }} = {{ entry.split('=')[1].strip() }}
-    {% endfor %}
+#  entry_points:
+#    {% for entry in data['entry_points']['console_scripts'] %}
+#      - {{ entry.split('=')[0].strip() }} = {{ entry.split('=')[1].strip() }}
+#    {% endfor %}
   
 
 requirements:
@@ -29,6 +29,7 @@ requirements:
   host:
     - python
     - pip
+    - setuptools
   run:
     - python
     # dependencies are defined in setup.py
