@@ -33,6 +33,14 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
       
+      - name: Install Dependencies
+        run: |
+          conda install -qy conda-build anaconda-client pytest pytest-cov
+          conda config --set auto_update_conda no
+          conda info -a
+          conda build conda.recipe --no-test
+          conda install --use-local marcpy
+          
       - name: Run Tests
         run: |
           pytest --color=yes -v --cov=marcpy tests
