@@ -48,7 +48,7 @@ jobs:
           codecov
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Push to Anaconda
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          export ANACONDA_API_TOKEN=${{secrets.SECRET_TOKEN}}
+          anaconda upload --user marc-kc --label main noarch/*.tar.bz2
