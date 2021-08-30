@@ -1,3 +1,7 @@
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
 #Import submodules so that you can directly access them after importing the main package
 import marcpy.conda
 import marcpy.gitcreds

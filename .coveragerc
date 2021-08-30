@@ -1,0 +1,7 @@
+[report]
+omit =
+    setup.py
+    marcpy/__main__.py
+    marcpy/_version.py
+    versioneer.py
+    tests/*
