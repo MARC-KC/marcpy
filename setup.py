@@ -1,15 +1,16 @@
 import pathlib
 from setuptools import setup, find_packages
+import versioneer
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.0.1'
+#VERSION = '0.0.1'
 PACKAGE_NAME = 'marcpy'
 AUTHOR = 'MARC Research Services'
 AUTHOR_EMAIL = 'marc_gis@email.com'
 URL = 'https://github.com/MARC-KC/marcpy'
 
-LICENSE = ''
+LICENSE = 'GNUv3'
 DESCRIPTION = 'Collection of useful function used by MARC Research Services'
 LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
@@ -23,7 +24,8 @@ INSTALL_REQUIRES = [
 ]
 
 setup(name=PACKAGE_NAME,
-      version=VERSION,
+      version=versioneer.get_version(),
+      cmdclass=versioneer.get_cmdclass(),
       description=DESCRIPTION,
       long_description=LONG_DESCRIPTION,
       long_description_content_type=LONG_DESC_TYPE,
@@ -32,5 +34,16 @@ setup(name=PACKAGE_NAME,
       author_email=AUTHOR_EMAIL,
       url=URL,
       install_requires=INSTALL_REQUIRES,
-      packages=find_packages()
-      )
+      packages=find_packages(),
+      entry_points={
+        'console_scripts': [
+            'marcpy=marcpy.cli:cli'
+        ]
+      },
+      keywords='marcpy',
+      classifiers=[
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+      ]
+)
