@@ -50,7 +50,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Push to Anaconda
         run: |
-          export ANACONDA_API_TOKEN=${{secrets.SECRET_TOKEN}}
+          export ANACONDA_API_TOKEN=${{secrets.ANACONDA_TOKEN}}
           #cd /opt/conda/conda-bld
           anaconda -t ${{secrets.SECRET_TOKEN}}
           #anaconda auth -i
