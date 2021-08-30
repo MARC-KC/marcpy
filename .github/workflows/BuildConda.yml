@@ -38,8 +38,8 @@ jobs:
           conda install -qy conda-build anaconda-client pytest pytest-cov
           conda config --set auto_update_conda no
           conda info -a
-          #conda build conda.recipe --no-test
-          #conda install --use-local marcpy
+          conda build conda.recipe --no-test
+          conda install --use-local marcpy
           
       - name: Run Tests
         run: |
