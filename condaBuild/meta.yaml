@@ -3,3 +3,6 @@
 package:
   name: {{ data.get('PACKAGE_NAME') }}
   version: {{ data.get('VERSION') }}
+
+source:
+  git_url: https://github.com/MARC-KC/marcpy.git
