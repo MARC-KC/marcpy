@@ -4,7 +4,7 @@ import versioneer
 
 HERE = pathlib.Path(__file__).parent
 
-#VERSION = '0.0.1'
+#VERSION = '0.0.1.9001'
 PACKAGE_NAME = 'marcpy'
 AUTHOR = 'MARC Research Services'
 AUTHOR_EMAIL = 'marc_gis@marc.org'
