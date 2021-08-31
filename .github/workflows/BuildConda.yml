@@ -43,15 +43,12 @@ jobs:
           
       - name: Run Tests
         run: |
-          #pytest --color=yes -v --cov=marcpy tests
-          #conda install -c conda-forge codecov
-          #codecov
+          pytest --color=yes -v --cov=marcpy tests
+          conda install -c conda-forge codecov
+          codecov
 
       # Runs a set of commands using the runners shell
       - name: Push to Anaconda
         run: |
-          #export ANACONDA_API_TOKEN=${{secrets.ANACONDA_TOKEN}}
           cd /opt/conda/conda-bld
-          #anaconda -t ${{secrets.ANACONDA_TOKEN}}
-          #anaconda auth -i
           anaconda  -t ${{secrets.ANACONDA_TOKEN}} upload --user marc-kc --label main noarch/*.tar.bz2
