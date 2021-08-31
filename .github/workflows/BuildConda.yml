@@ -48,6 +48,7 @@ jobs:
           codecov
 
       # Runs a set of commands using the runners shell
+      # Get an Anaconda token (with read and write API access) at https://anaconda.org/MARC-KC/settings/access
       - name: Push to Anaconda
         run: |
           cd /opt/conda/conda-bld
