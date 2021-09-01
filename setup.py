@@ -36,11 +36,6 @@ setup(name=PACKAGE_NAME,
       url=URL,
       install_requires=INSTALL_REQUIRES,
       packages=find_packages(),
-      #entry_points={
-      #  'console_scripts': [
-      #      'marcpy=marcpy.cli:cli'
-      #  ]
-      #},
       keywords='marcpy',
       #classifiers=[
       #  'Programming Language :: Python :: 3.6',
