@@ -18,7 +18,7 @@ LONG_DESC_TYPE = "text/markdown"
 INSTALL_REQUIRES = [
       'numpy', #conda
       'pandas>=1.0', #conda, sql
-      'keyring', #keyring_wrappers, gitcreds
+      'keyring>=21.8.0', #keyring_wrappers, gitcreds
       'pyodbc', #keyring_wrappers, sql
       'sqlalchemy' #sql
 ]
