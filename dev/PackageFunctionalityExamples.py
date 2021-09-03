@@ -208,6 +208,12 @@ TableB = pd.DataFrame(npData[[0,1,2,3,4,7]],
                       columns = ['A', 'B', 'C']).reset_index()
 marcpy.anti_join(df_left = TableA, df_right = TableB, on = ['A', 'B', 'C'])
 
+TableA = pd.DataFrame(npData,
+                      columns = ['A', 'B', 'C']).reset_index(drop=True)
+TableB = pd.DataFrame(npData[[0,1,2,3,4,7]],
+                      columns = ['A', 'B', 'C']).reset_index(drop=True)
+marcpy.anti_join(df_left = TableA, df_right = TableB, on = None)
+
 TableC = pd.DataFrame(npData,
                       columns = ['A', 'B', 'C']).reset_index()
 TableD = pd.DataFrame(npData[[0,1,2,3,4,7]],
