@@ -7,6 +7,7 @@ import marcpy.conda
 import marcpy.gitcreds
 import marcpy.sql
 import marcpy.utils
+import marcpy.keeper
 
 #Import select functions to the main package
 from marcpy.keyring_wrappers import key_set
