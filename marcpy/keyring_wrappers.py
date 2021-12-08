@@ -89,6 +89,9 @@ def key_set(serviceName="", userName="", password=None):
         The service name for the keyring object you want to set.
     userName : str
         The username for the keyring object you want to set.
+    password : str
+        The password you want to attach to the key. The default None uses 
+        getpass() to give you a command prompt to type it in the terminal.
 
     Returns
     -------
