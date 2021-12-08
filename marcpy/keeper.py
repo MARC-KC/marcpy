@@ -3,6 +3,7 @@ import os
 import sys
 import subprocess
 import re
+import json
 
 
 import pandas as pd
@@ -108,7 +109,8 @@ def keeper_getKeyLogin(keyTitle, keyDF=None, keeperExe="C:\\Program Files (x86)\
     Return
     ------
     Dict
-        A dictionary with the 'username' and 'password' of the specified record.
+        A dictionary with the 'record_uid', 'title', 'username', 'password', 
+        'login_url', and 'notes' of the specified record.
     """
     
     #Create keyDF if None
@@ -125,11 +127,11 @@ def keeper_getKeyLogin(keyTitle, keyDF=None, keeperExe="C:\\Program Files (x86)\
     if not os.path.exists(keeperExe):
         raise RuntimeError("Verify Keeper Commander CLI is installed and the keeperExe path is correct.")
     
-    # Retrieve password
-    command = '"{keeperExe}" get --format=password {UID}'.format(keeperExe=keeperExe, UID=UID)
-    password = re.sub("^\s*|\s*$", "", subprocess.check_output(command, shell = True).decode("utf-8"))
+    # Retrieve details
+    command = '"{keeperExe}" get --format=json {UID}'.format(keeperExe=keeperExe, UID=UID)
+    details = json.loads(subprocess.check_output(command, shell = True).decode("cp1252"))
     
-    return({'username':username, 'password':password})
+    return({'record_uid':UID, 'title':keyTitle, 'username':username, 'password':details.get('password', ''), 'login_url':details.get('login_url', ''), 'notes':details.get('notes', '')})
 
 
 
