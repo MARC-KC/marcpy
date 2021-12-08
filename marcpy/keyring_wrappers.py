@@ -73,7 +73,7 @@ def key_get(serviceName="", userName=""):
     return outPass
 
 
-def key_set(serviceName="", userName=""):
+def key_set(serviceName="", userName="", password=None):
     """Sets a key password
     
     Given the serviceName and userName, this function will set the password
@@ -104,7 +104,10 @@ def key_set(serviceName="", userName=""):
         raise RuntimeError("There is already a key set for " + serviceName + ". Please delete the old key and reset it if you need to alter it.")
 
     #Set Key
-    keyring.set_password(serviceName, userName, getpass.getpass())
+    if password is None:
+        password = getpass.getpass()
+    
+    keyring.set_password(serviceName, userName, password)
 
 
 def key_delete(serviceName="", userName=""):
