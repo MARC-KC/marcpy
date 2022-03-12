@@ -120,7 +120,6 @@ def keeper_getKeyLogin(keyTitle, keyDF=None, keeperExe="C:\\Program Files (x86)\
     #Get Username and UID from keyDF
     if not keyDF['Title'].isin([keyTitle]).any():
         raise RuntimeError("The supplied 'keyTitle' does not match any titles in Keeper. Please check spelling.")
-    username = keyDF.loc[keyDF['Title'] == keyTitle, 'Login'].values[0]
     UID = keyDF.loc[keyDF['Title'] == keyTitle, 'Record UID'].values[0]
     
     # Verify keeper EXE exists in specified location
@@ -131,7 +130,7 @@ def keeper_getKeyLogin(keyTitle, keyDF=None, keeperExe="C:\\Program Files (x86)\
     command = '"{keeperExe}" get --format=json {UID}'.format(keeperExe=keeperExe, UID=UID)
     details = json.loads(subprocess.check_output(command, shell = True).decode("cp1252"))
     
-    return({'record_uid':UID, 'title':keyTitle, 'username':username, 'password':details.get('password', ''), 'login_url':details.get('login_url', ''), 'notes':details.get('notes', '')})
+    return({'record_uid':UID, 'title':keyTitle, 'username':details.get('login', ''), 'password':details.get('password', ''), 'login_url':details.get('login_url', ''), 'notes':details.get('notes', '')})
 
 
 
