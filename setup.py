@@ -17,10 +17,11 @@ LONG_DESC_TYPE = "text/markdown"
 
 INSTALL_REQUIRES = [
       'numpy', #conda
-      'pandas>=1.0', #conda, sql
+      'pandas>=1.0', #conda, sql, jsonpath_pd
       'keyring>=21.8.0', #keyring_wrappers, gitcreds
       'pyodbc', #keyring_wrappers, sql
-      'sqlalchemy' #sql
+      'sqlalchemy', #sql
+      'jsonpath-ng' # jsonpath_pd
 ]
 
 setup(name=PACKAGE_NAME,
