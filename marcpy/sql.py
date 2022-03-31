@@ -258,3 +258,172 @@ def dbTableStructure(conn, addGeoIndicator = False, includeViews = True, rmTable
     
     return tables
 
+
+
+
+
+def createDatabaseStringFromDF(df, serverCol, databaseCol, userCol, unique = False):
+    """Create database connection string from a pandas.dataframe
+    
+    You need a dataframe with the following columns: 
+        * Server ('Chiefs', 'Knights', 'Phantoms')  
+        * Database ('MARC_PUB', 'MARC_PRD', etc)  
+        * User ('marcpub', 'marcdl', etc; these may need tweaked to work with 
+                keys stored with keyring.)
+    
+    Parameters
+    ----------
+    df : pandas.Dataframe
+        The input dataframe. serverCol, databaseCol, and userCol must all reside
+        in df.
+    serverCol : str
+        The column with the server for the connection.
+    databaseCol : str
+        The column with the database for the connection.
+    userCol : str
+        The column with the user for the connection.
+    unique : bool
+        Should duplicate connections be dropped? Unique connections or 1:1 with 
+        input dataframe? Default is False.
+    
+    Return
+    ------
+    pandas.Series 
+        A Series with the connection strings.
+    """
+    
+    out = df.apply(lambda x: "{}.{}.{}".format(x[serverCol].lower(), x[databaseCol].lower(), x[userCol].lower()) if str(x[serverCol]) != 'nan' and str(x[databaseCol]) != 'nan' and str(x[userCol]) != 'nan' else numpy.nan, axis = 1)
+    if unique:
+        out = out.drop_duplicates()
+    return out
+
+
+def connectODBCFromDF(df, serverCol = None, databaseCol = None, userCol = None, connectionCol = None):
+    """Create an OBDC connection for every record in a dataframe.
+    
+     You either need a dataframe with the following columns: 
+        * Server ('Chiefs', 'Knights', 'Phantoms')  
+        * Database ('MARC_PUB', 'MARC_PRD', etc)  
+        * User ('marcpub', 'marcdl', etc; these may need tweaked to work with 
+                keys stored with keyring.)  
+        OR
+        * Connection string (like 'chiefs.marc_pub.marcpub' or
+                            'knights.marc_prd.marcdl') - Output column 
+                            from `createDatabaseStringFromDF()`  
+    
+    Parameters
+    ----------
+    df : pandas.Dataframe
+        The input dataframe. serverCol, databaseCol, and userCol OR 
+        connectionCol must all reside in df.
+    serverCol : str
+        The column with the server for the connection.
+    databaseCol : str
+        The column with the database for the connection.
+    userCol : str
+        The column with the user for the connection.
+    connectionCol : str
+        The column with the connection string.
+    
+    Return
+    ------
+    dict
+        A dictionary with the key being the connection string (derived from 
+        `createDatabaseStringFromDF()`) and the value being the result of that
+        connection string being passed to `connectODBC()`. If the string 
+        suplied to `connectODBC()` fails (likely the key isn't accessible
+        by keyring and needs added or the user modified) it drops that record
+        from the result dictionary.
+    """
+    
+    #Get database connection strings
+    if connectionCol is not None:
+        DBconnStrings = df[connectionCol]
+    else:
+        DBconnStrings = createDatabaseStringFromDF(df, serverCol, databaseCol, userCol, unique = True).dropna().values
+    
+    def _attemptConnectODBC(databaseString):
+            try:
+                out = connectODBC(databaseString)
+            except:
+                out = None
+            return(out)
+    
+    #Get database connection dictionary
+    DBconnDict = {k:v for k,v in dict(zip(DBconnStrings, map(_attemptConnectODBC, DBconnStrings))).items() if v is not None}
+    
+    return DBconnDict
+
+
+def dbViewStructure(conn, schema, view):
+    """List all Parent-Child relationships with tables for a view.
+    
+    Under the hood its just parameterized SQL query returned as a dataframe.
+    
+    Parameters
+    ----------
+    conn : 
+        SQLalchemy ODBC connection object
+    schema : str
+        Name of the schema that view resides in.
+    view : str
+        Name of the view that you want the structure for.
+    
+    Return
+    ------
+    pandas.Dataframe
+        A dataframe with the following columns: ParentDatabase, ParentSchema, 
+        ParentTable, ChildDatabase, ChildSchema, ChildTable.
+    
+    """
+    
+    
+    viewsSQL =  """ WITH deps (ParentDatabase, ParentSchema, ParentTable, ChildDatabase, ChildSchema, ChildTable) AS (
+                        SELECT vtu.VIEW_CATALOG, vtu.VIEW_SCHEMA, vtu.VIEW_NAME, TABLE_CATALOG, TABLE_SCHEMA, TABLE_NAME
+                        FROM INFORMATION_SCHEMA.VIEW_TABLE_USAGE AS vtu
+                        WHERE VIEW_SCHEMA = '{schema}' AND VIEW_NAME = '{view}'
+                        UNION all
+                        SELECT vtu.VIEW_CATALOG, vtu.VIEW_SCHEMA, vtu.VIEW_NAME, vtu.TABLE_CATALOG, vtu.TABLE_SCHEMA, vtu.TABLE_NAME
+                        FROM INFORMATION_SCHEMA.VIEW_TABLE_USAGE AS vtu
+                        INNER JOIN deps ON deps.ChildSchema = vtu.VIEW_SCHEMA AND deps.ChildTable = vtu.VIEW_NAME 
+                    )
+                    SELECT ParentDatabase, ParentSchema, ParentTable, ChildDatabase, ChildSchema, ChildTable
+                    FROM deps;
+                """.format(schema = schema, view = view)
+    
+    views = pandas.read_sql(viewsSQL, conn)
+    
+    return views
+
+
+def dbViewStructureFromDF(df, connectionCol, schemaCol, viewCol):
+    """Get View Struture for an entire dataframe's worth of Views
+    
+    Parameters
+    ----------
+    df : pandas.Dataframe
+        Input dataframe. It must contain the columns specified in connectionCol,
+        schemaCol, and viewCol.
+    connectionCol : str
+        The column with the connection string returned from 
+        `createDatabaseStringFromDF()`. 
+    schemaCol : str
+        The column with the server name.
+    viewCol : str
+        The column with the view name.
+    
+    Return
+    ------
+    pandas.Dataframe
+        A dataframe with the following columns: RequestConnection, 
+        RequestServer, RequestDatabase, RequestSchema, RequestView, 
+        ParentDatabase, ParentSchema, ParentTable, 
+        ChildDatabase, ChildSchema, ChildTable
+    """
+    
+    connections = connectODBCFromDF(df.drop_duplicates(subset = [connectionCol]), connectionCol = connectionCol)
+    
+    views = pandas.concat(df.apply(lambda x: dbViewStructure(conn = connections[x[connectionCol]]['sqlalchemy'], schema = x[schemaCol], view = x[viewCol]).assign(RequestConnection = x[connectionCol], RequestServer = x[connectionCol].split('.')[0], RequestDatabase = x[connectionCol].split('.')[1], RequestSchema = x[schemaCol], RequestView = x[viewCol]), axis = 1).values, ignore_index=True)
+    views = views[['RequestConnection', 'RequestServer', 'RequestDatabase', 'RequestSchema', 'RequestView', 'ParentDatabase', 'ParentSchema', 'ParentTable', 'ChildDatabase', 'ChildSchema', 'ChildTable']]
+    
+    return views
