@@ -1,4 +1,5 @@
 import os
+import sys
 import zipfile
 import smtplib
 import email
@@ -11,12 +12,13 @@ from marcpy.keyring_wrappers import key_get
 # toEmails = 'jpeterson@marc.org'
 # subject = 'test email'
 # body = 'This is a test.\nThis is line2.'
+
 def sendEmail(fromEmail, toEmails, subject, body):
-     """Send Email
+    """Send Email
     
     Send an Email with Python.
     This function is modified for Python 3 from an old local MARC script found 
-    in X:\Tools\Scripting\Admin\rsMailPython.py.
+    in X:\\Tools\\Scripting\\Admin\\rsMailPython.py.
     http://naelshiab.com/tutorial-send-email-python/
     
     Parameters
@@ -64,3 +66,10 @@ def sendEmail(fromEmail, toEmails, subject, body):
     
     #Close object
     s.quit()
+
+
+def main(argv=None):
+    sendEmail(fromEmail='<email>', toEmails=['<email1>', '<email2>'], subject = 'Subject Heading', body='This is my body.\nThis is line 2.')
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
