@@ -3,7 +3,6 @@ functions may be hardcoded to work with Microsoft SQL Servers as that is what
 MARC uses.
 """
 import datetime
-import urllib.parse
 import re
 
 import pyodbc
@@ -46,15 +45,20 @@ def connectODBC(databaseString):
     connString = keyring_wrappers.key_get("DB_conn", databaseString)
     
     #Parse string into details dictionary.
-    lst_details = [{x.split("=", 1)[0] : x.split("=", 1)[1]} for x in connString.split(";")[0:-1]]
-    details = dict((key, d[key]) for d in lst_details for key in d)
+    detailsMatch = re.search('^Driver=\\{?(.*?)\\}?;Server=(.*?);Database=(.*?);UID=(.*?);PWD=\\{(.*?)\\};$|^Driver=\\{?(.*?)\\}?;Server=(.*?);Database=(.*?);UID=(.*?);PWD=(.*?);$', connString)
+    details = {
+        'Driver' : detailsMatch.group(1),
+        'Server' : detailsMatch.group(2),
+        'Database' : detailsMatch.group(3),
+        'UID' : detailsMatch.group(4),
+        'PWD' : detailsMatch.group(5)
+    }
     
     #Create pyodbc database connection.
     conn = pyodbc.connect(connString)
     
     #Create sqlalchemy engine connection
-    quotedConnString = urllib.parse.quote_plus(connString)
-    engine = sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect={}'.format(quotedConnString))
+    engine = sqlalchemy.create_engine('mssql+pyodbc:///?odbc_connect={}'.format(connString))
     
     #Create return dictionary
     out = {'pyodbc':conn, 'sqlalchemy':engine, 'details':details}
