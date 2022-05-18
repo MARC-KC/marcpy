@@ -11,6 +11,45 @@ from marcpy import keyring_wrappers
 import numpy
 import pandas
 
+
+def dbConn_EscapeCurlyBrace(pwd):
+    """Escape Right-Side Curly Brace in Database Passwords
+    
+    Used in Keeper to Keyring. See https://stackoverflow.com/questions/22398212/escape-semicolon-in-odbc-connection-string-in-app-config-file 
+    and https://docs.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-ver15
+    
+    Parameters
+    ----------
+    pwd : str
+        Password to escape
+    
+    Return
+    -----
+    str
+        Escaped Password.
+    """
+    
+    return( re.sub('\\}', '}}', pwd) )
+
+def dbConn_unEscapeCurlyBrace(pwd):
+    """Unescape Right-Side Curly Brace in Database Passwords
+    
+    Used in connectODBC. See https://stackoverflow.com/questions/22398212/escape-semicolon-in-odbc-connection-string-in-app-config-file 
+    and https://docs.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-ver15
+    
+    Parameters
+    ----------
+    pwd : str
+        Password to unescape
+    
+    Return
+    -----
+    str
+        Unescaped Password.
+    """
+    
+    return( re.sub('\\}\\}', '}', pwd) )
+
 # databaseString = "chiefs.marc_pub.marcpub"
 def connectODBC(databaseString):
     """Connect to ODBC Database Using keyring
@@ -51,7 +90,7 @@ def connectODBC(databaseString):
         'Server' : detailsMatch.group(2),
         'Database' : detailsMatch.group(3),
         'UID' : detailsMatch.group(4),
-        'PWD' : detailsMatch.group(5)
+        'PWD' : dbConn_unEscapeCurlyBrace(detailsMatch.group(5))
     }
     
     #Create pyodbc database connection.
