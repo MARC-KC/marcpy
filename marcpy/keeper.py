@@ -113,6 +113,11 @@ def keeper_getKeyLogin(keyTitle, keyDF=None, keeperExe="C:\\Program Files (x86)\
         'login_url', and 'notes' of the specified record.
     """
     
+    #Specify default keeperExe if None
+    #This was added to keep the KeeperToKeyringManagementModule cleaner and so that the default its entirely managed by this module
+    if keeperExe is None:
+        keeperExe = "C:\\Program Files (x86)\\Keeper Commander\\keeper-commander.exe"
+    
     #Create keyDF if None
     if keyDF is None:
         keyDF = keeper_getKeyDF(keeperExe)
