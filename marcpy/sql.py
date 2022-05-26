@@ -79,18 +79,18 @@ def connectODBC(databaseString):
     
     #Create Service Name
     serviceName = ":DB_conn:" + databaseString
-    
+
     #Retrieve database connection string
     connString = keyring_wrappers.key_get("DB_conn", databaseString)
     
     #Parse string into details dictionary.
-    detailsMatch = re.search('^Driver=\\{?(.*?)\\}?;Server=(.*?);Database=(.*?);UID=(.*?);PWD=\\{(.*?)\\};$|^Driver=\\{?(.*?)\\}?;Server=(.*?);Database=(.*?);UID=(.*?);PWD=(.*?);$', connString)
+    detailsMatch = re.search('^Driver=\\{?(.*?)\\}?;Server=(.*?);Database=(.*?);UID=(.*?);PWD=(.*?);$', connString)
     details = {
         'Driver' : detailsMatch.group(1),
         'Server' : detailsMatch.group(2),
         'Database' : detailsMatch.group(3),
         'UID' : detailsMatch.group(4),
-        'PWD' : dbConn_unEscapeCurlyBrace(detailsMatch.group(5))
+        'PWD' : dbConn_unEscapeCurlyBrace((re.sub("^\\{|\\}$", "", detailsMatch.group(5)) if bool(re.search("^\\{", detailsMatch.group(5))) and bool(re.search("\\}$", detailsMatch.group(5))) else detailsMatch.group(5)))
     }
     
     #Create pyodbc database connection.
