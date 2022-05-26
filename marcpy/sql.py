@@ -140,7 +140,7 @@ def _pandas_type_checker(type_in):
 
 
 
-def getOBDCtable(conn, query):
+def getODBCtable(conn, query):
     """Get a {pandas} dataframe from the {pyodbc} connection
     
     This function is a more explicit implimentation of `pandas.read_sql()` when
