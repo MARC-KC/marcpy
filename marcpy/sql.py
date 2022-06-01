@@ -34,7 +34,7 @@ def dbConn_EscapeCurlyBrace(pwd):
 def dbConn_unEscapeCurlyBrace(pwd):
     """Unescape Right-Side Curly Brace in Database Passwords
     
-    Used in connectODBC. See https://stackoverflow.com/questions/22398212/escape-semicolon-in-odbc-connection-string-in-app-config-file 
+    Was used in connectODBC prior to 2022-06-01. See https://stackoverflow.com/questions/22398212/escape-semicolon-in-odbc-connection-string-in-app-config-file 
     and https://docs.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-ver15
     
     Parameters
@@ -74,7 +74,7 @@ def connectODBC(databaseString):
             'sqlalchemy' - sqlalchemy.engine - An odbc based connection string 
                 object for connections to the SQL Database using {sqlalchemy}.
             'details' - dictionary - holds plain text connection details. Has 
-                the keys: 'Driver', 'Server', 'Database', 'UID', and 'PWD'
+                the keys: 'Driver', 'Server', 'Database', 'UID'.
     """
     
     #Create Service Name
@@ -84,13 +84,12 @@ def connectODBC(databaseString):
     connString = keyring_wrappers.key_get("DB_conn", databaseString)
     
     #Parse string into details dictionary.
-    detailsMatch = re.search('^Driver=\\{?(.*?)\\}?;Server=(.*?);Database=(.*?);UID=(.*?);PWD=(.*?);$', connString)
+    detailsMatch = re.search('^Driver=\\{?(.*?)\\}?;Server=(.*?);Database=(.*?);UID=(.*?);', connString)
     details = {
         'Driver' : detailsMatch.group(1),
         'Server' : detailsMatch.group(2),
         'Database' : detailsMatch.group(3),
-        'UID' : detailsMatch.group(4),
-        'PWD' : dbConn_unEscapeCurlyBrace((re.sub("^\\{|\\}$", "", detailsMatch.group(5)) if bool(re.search("^\\{", detailsMatch.group(5))) and bool(re.search("\\}$", detailsMatch.group(5))) else detailsMatch.group(5)))
+        'UID' : detailsMatch.group(4)
     }
     
     #Create pyodbc database connection.
