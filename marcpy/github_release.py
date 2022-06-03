@@ -6,6 +6,7 @@ import requests
 import sys
 import re
 import shutil
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -15,6 +16,41 @@ import marcpy.jsonpath_pd
 from marcpy.jsonpath_pd import JSONtoLongDataFrame
 
 
+def github_get_PAT():
+    PAT = None
+    
+    if platform.system() != "Windows":
+        return(PAT)
+        
+    #Try username = PersonalAccessToken
+    PAT = keyring.get_password(service_name="git:https://github.com", username = "PersonalAccessToken")
+    
+    #Try username from ~/.gitconfig
+    if PAT is None:
+        def _useGitUsername():
+            PAT=None
+            gitConfigPath = os.path.join(os.environ.get('USERPROFILE'), ".gitconfig") 
+            if os.path.exists(gitConfigPath):
+                with open(gitConfigPath, "r") as fp:
+                    username = [re.sub("\s+", "", re.sub("^\s+name = ", "", line)) for line in fp if re.match("\s+name = ", line)]
+                username = username[0] if len(username) > 0 else ''
+                PAT = keyring.get_password(service_name="git:https://github.com", username = username)
+            return(PAT)
+        PAT = _useGitUsername()
+    
+    #Add warning if not found. 
+    if PAT is None:
+        message = """
+        No PAT was found in Windows Credential Manager.
+        Checked for the following keys: 
+            service = "git:https://github.com"      username = "PersonalAccessToken"
+            service = "git:https://github.com"      username = "<user.name entry in ~.gitconfig>"
+        Please make sure you have a GIT PAT saved in Windows Credential Manager. 
+        If you do and its under a different service/username than above you will need to edit `marcpy.github_release.github_get_PAT()`
+        """
+        warnings.warn(message)
+    
+    return(PAT)
 
 
 
@@ -71,10 +107,7 @@ def github_release_download_file(url, file_name):
     None
     """
     
-    if platform.system() == "Windows":
-        PAT = keyring.get_password(service_name="git:https://github.com", username = "PersonalAccessToken")
-    else:
-        PAT = None
+    PAT = github_get_PAT()
     
     # open in binary mode
     with open(file_name, "wb") as file:
@@ -107,12 +140,12 @@ def github_release_download_unzip_file(path, url):
     """
     
     #Download files
-    file_path =  pathlib.Path(path, url.split("/")[-1])
-    github_release_download_file(url = url, file_name = file_path) 
+    # file_path =  pathlib.Path(path, url.split("/")[-1])
+    github_release_download_file(url = url, file_name = path) 
     
     #Extract files
-    shutil.unpack_archive(file_path, os.path.dirname(file_path))
-    os.remove(file_path)
+    shutil.unpack_archive(path, os.path.dirname(path))
+    os.remove(path)
 
 
 def github_release_json(owner, repo, per_page = 3, page = 1):
@@ -141,10 +174,7 @@ def github_release_json(owner, repo, per_page = 3, page = 1):
     
     url = "https://api.github.com/repos/{owner}/{repo}/releases?per_page={per_page}&page={page}".format(owner=owner, repo=repo, per_page=per_page, page=page)
     
-    if platform.system() == "Windows":
-        PAT = keyring.get_password(service_name="git:https://github.com", username = "PersonalAccessToken")
-    else:
-        PAT = None
+    PAT = github_get_PAT()
     
     if PAT is not None:
         head = {'Authorization': 'token {}'.format(PAT)}
@@ -348,8 +378,9 @@ def check_geckodriver(path = None, version = None, assetVersion = 'win64.zip', p
     
     releaseInfo = github_release_info(owner='mozilla', repo='geckodriver', version = version, assetVersion = assetVersion, tagVersionRegex='\d+\.\d+\.\d+', tagPrefixRegex = 'v', tagSuffixRegex = '', assetTypeRegex = '{VERSION_TAG}-(.*)$', per_page=per_page, page=page)
     installPath = _github_release_check_install_path(path = path, subDirectory = "geckodriver/{}".format(releaseInfo['version']))
+    file_path = pathlib.Path(installPath, releaseInfo['assetBrowserDownloadUrl'].split("/")[-1])
     if 'geckodriver.exe' not in os.listdir(installPath):
-        github_release_download_unzip_file(path = installPath, url = releaseInfo['assetAPIUrl'])
+        github_release_download_unzip_file(path = file_path, url = releaseInfo['assetAPIUrl'])
     return(str(pathlib.Path(installPath, 'geckodriver.exe')))
 
 
@@ -396,6 +427,7 @@ def check_marcpymeta(path = None, version = None, per_page = 3, page = 1):
 
 def main(argv=None):
     check_geckodriver(path = "X:/WorkEfforts/ResearchServices/DataManagement/Metadata_AGOtoMARCMETA", version = None)
+    check_geckodriver(path = None, version = None)
     check_marcpymeta(path = None, version = None)
 
     github_release_info(owner='mozilla', repo='geckodriver', version = None, assetVersion = 'win64.zip', tagVersionRegex='\d+\.\d+\.\d+', tagPrefixRegex = 'v', tagSuffixRegex = '', assetTypeRegex = '{VERSION_TAG}-(.*)$', per_page=3, page=1)
