@@ -148,7 +148,7 @@ def github_release_download_unzip_file(path, url):
     os.remove(path)
 
 
-def github_release_json(owner, repo, per_page = 3, page = 1):
+def github_release_json(owner, repo, per_page = 7, page = 1):
     """Download release json for a GitHub repository
     
     Will use the PersonalAccessToken stored under the service 
@@ -183,7 +183,7 @@ def github_release_json(owner, repo, per_page = 3, page = 1):
         jsonRelease = requests.get(url).json()
     return(jsonRelease)
 
-def github_release_jsonDF(owner, repo, per_page=6, page = 1):
+def github_release_jsonDF(owner, repo, per_page = 7, page = 1):
     """Download release json for a GitHub repository and convert to DataFrame
     
     Will use the PersonalAccessToken stored under the service 
@@ -213,7 +213,7 @@ def github_release_jsonDF(owner, repo, per_page=6, page = 1):
     return(dfRelease)
 
 
-def github_release_versions(owner, repo, tagVersionRegex='', tagPrefixRegex = '', tagSuffixRegex = '', per_page=6, page=1):
+def github_release_versions(owner, repo, tagVersionRegex='', tagPrefixRegex = '', tagSuffixRegex = '', per_page = 7, page=1):
     """Get release versions for a GitHub repository
     
     Will use the PersonalAccessToken stored under the service 
@@ -257,9 +257,9 @@ def github_release_versions(owner, repo, tagVersionRegex='', tagPrefixRegex = ''
 # tagPrefixRegex = 'v'
 # tagSuffixRegex = ''
 # assetTypeRegex = '{VERSION}-py\d+_\d+(.*)$'
-# per_page=3
+# per_page = 7
 # page=1
-def github_release_info(owner, repo, version = None, assetVersion = None, assetTypeRegex = '(.*)', tagVersionRegex='', tagPrefixRegex = '', tagSuffixRegex = '', per_page=3, page=1):
+def github_release_info(owner, repo, version = None, assetVersion = None, assetTypeRegex = '(.*)', tagVersionRegex='', tagPrefixRegex = '', tagSuffixRegex = '', per_page = 7, page=1):
     """Get release info for a GitHub repository
     
     Will use the PersonalAccessToken stored under the service 
@@ -342,7 +342,7 @@ def github_release_info(owner, repo, version = None, assetVersion = None, assetT
     return({'assetName':assetName, 'assetID':assetID, 'assetAPIUrl':assetAPIUrl, 'assetBrowserDownloadUrl':assetBrowserDownloadUrl, 'version':version, 'version_tag':version_tag})
 
 
-def check_geckodriver(path = None, version = None, assetVersion = 'win64.zip', per_page = 3, page = 1):
+def check_geckodriver(path = None, version = None, assetVersion = 'win64.zip', per_page = 7, page = 1):
     """Check that geckodriver is installed in expected location
     
     Checks for specified version (or latest version if `version = None`) is 
@@ -384,7 +384,7 @@ def check_geckodriver(path = None, version = None, assetVersion = 'win64.zip', p
     return(str(pathlib.Path(installPath, 'geckodriver.exe')))
 
 
-def check_marcpymeta(path = None, version = None, per_page = 3, page = 1):
+def check_marcpymeta(path = None, version = None, per_page = 7, page = 1):
     """Check that marcpymeta is installed in expected location
     
     Checks for specified version (or latest version if `version = None`) is 
@@ -430,8 +430,8 @@ def main(argv=None):
     check_geckodriver(path = None, version = None)
     check_marcpymeta(path = None, version = None)
 
-    github_release_info(owner='mozilla', repo='geckodriver', version = None, assetVersion = 'win64.zip', tagVersionRegex='\d+\.\d+\.\d+', tagPrefixRegex = 'v', tagSuffixRegex = '', assetTypeRegex = '{VERSION_TAG}-(.*)$', per_page=6, page=1)
-    github_release_info(owner='MARC-KC', repo='MARC_META-marcpymeta', version = None, assetVersion = '.tar.bz2', tagVersionRegex='\d+\\.\d+\\.\d+|\d+\\.\d+\\.\d+\\.\d+', tagPrefixRegex = 'v', tagSuffixRegex = '', assetTypeRegex = '{VERSION}-py\d+_\d+(.*)$', per_page=3, page=1)
+    github_release_info(owner='mozilla', repo='geckodriver', version = None, assetVersion = 'win64.zip', tagVersionRegex='\d+\.\d+\.\d+', tagPrefixRegex = 'v', tagSuffixRegex = '', assetTypeRegex = '{VERSION_TAG}-(.*)$', per_page = 7, page=1)
+    github_release_info(owner='MARC-KC', repo='MARC_META-marcpymeta', version = None, assetVersion = '.tar.bz2', tagVersionRegex='\d+\\.\d+\\.\d+|\d+\\.\d+\\.\d+\\.\d+', tagPrefixRegex = 'v', tagSuffixRegex = '', assetTypeRegex = '{VERSION}-py\d+_\d+(.*)$', per_page = 7, page=1)
 
 
 if __name__ == "__main__":
