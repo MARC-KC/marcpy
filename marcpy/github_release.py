@@ -148,7 +148,7 @@ def github_release_download_unzip_file(path, url):
     os.remove(path)
 
 
-def github_release_json(owner, repo, per_page = 6, page = 1):
+def github_release_json(owner, repo, per_page = 3, page = 1):
     """Download release json for a GitHub repository
     
     Will use the PersonalAccessToken stored under the service 
@@ -342,7 +342,7 @@ def github_release_info(owner, repo, version = None, assetVersion = None, assetT
     return({'assetName':assetName, 'assetID':assetID, 'assetAPIUrl':assetAPIUrl, 'assetBrowserDownloadUrl':assetBrowserDownloadUrl, 'version':version, 'version_tag':version_tag})
 
 
-def check_geckodriver(path = None, version = None, assetVersion = 'win64.zip', per_page = 6, page = 1):
+def check_geckodriver(path = None, version = None, assetVersion = 'win64.zip', per_page = 3, page = 1):
     """Check that geckodriver is installed in expected location
     
     Checks for specified version (or latest version if `version = None`) is 
@@ -384,7 +384,7 @@ def check_geckodriver(path = None, version = None, assetVersion = 'win64.zip', p
     return(str(pathlib.Path(installPath, 'geckodriver.exe')))
 
 
-def check_marcpymeta(path = None, version = None, per_page = 6, page = 1):
+def check_marcpymeta(path = None, version = None, per_page = 3, page = 1):
     """Check that marcpymeta is installed in expected location
     
     Checks for specified version (or latest version if `version = None`) is 
